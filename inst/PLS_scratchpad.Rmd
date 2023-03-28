@@ -129,8 +129,35 @@ fy_pattern <- 'FY20..'
 names(subfiles) <- stringr::str_extract(subfys, fy_pattern)
 ```
 
-Which file is which?
-```{r}
+TODO: move that up earlier in the process now that it works
 
+Which file is which?
+
+EVENING BREAKPOINT 03.27: assigning names to identify outlet and state files not working yet (identification based on `which.max` and `which.min` works ok)
+```{r}
+check_nrow <- \(filename) {
+  n <- data.table::fread(file = filename, select = 1L) %>%
+    nrow()
+  n
+}
+check_nrow_multi <- \(filenames) {
+  ns <- purrr::map(.x = filenames, .f = check_nrow)
+  ns
+}
+# nums <- check_nrow(subfiles[[1]][[1]]) #works with one
+nums <- purrr::map(.x = subfiles, .f = check_nrow_multi)
+
+identify_single_fy <- \(files, fy) {
+  fy <- unlist(fy)
+  names(files)[which.max(fy)] <- 'outlets'
+  files
+}
+
+identify_single_fy(subfiles[1], nums[1])
+
+identify_pls_csvs <- \(filenames) {
+  nums <- purrr::map(.x = filenames, .f = check_nrow_multi)
+  
+}
 ```
 
