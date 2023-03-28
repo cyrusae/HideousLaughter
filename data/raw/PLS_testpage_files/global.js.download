@@ -1,0 +1,294 @@
+/**
+* @file
+* Global utilities.
+*
+*/
+(function($, Drupal) {
+
+    'use strict';
+
+    Drupal.behaviors.bootstrap_barrio_subtheme = {
+        attach: function(context, settings) {
+            var position = $(window).scrollTop();
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 50) {
+                    $('body').addClass("scrolled");
+                }
+                else {
+                    $('body').removeClass("scrolled");
+                }
+                var scroll = $(window).scrollTop();
+                if (scroll > position) {
+                    $('body').addClass("scrolldown");
+                    $('body').removeClass("scrollup");
+                } else {
+                    $('body').addClass("scrollup");
+                    $('body').removeClass("scrolldown");
+                }
+                position = scroll;
+            });
+
+        }
+    };
+
+})(jQuery, Drupal);
+
+function getAllUrlParams(url) {
+    var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+    var obj = {};
+
+    if (queryString) {
+        queryString = queryString.split('#')[0];
+        var arr = queryString.split('&');
+
+        for (var i = 0; i < arr.length; i++) {
+            var a = arr[i].split('=');
+            var paramName = a[0];
+            var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+
+            paramName = paramName.toLowerCase();
+            if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+
+            if (paramName.match(/\[(\d+)?\]$/)) {
+                var key = paramName.replace(/\[(\d+)?\]/, '');
+                if (!obj[key]) obj[key] = [];
+
+                if (paramName.match(/\[\d+\]$/)) {
+                    var index = /\[(\d+)\]/.exec(paramName)[1];
+                    obj[key][index] = paramValue;
+                } else {
+                    obj[key].push(paramValue);
+                }
+            } else {
+                if (!obj[paramName]) {
+                    obj[paramName] = paramValue;
+                } else if (obj[paramName] && typeof obj[paramName] === 'string'){
+                    obj[paramName] = [obj[paramName]];
+                    obj[paramName].push(paramValue);
+                } else {
+                    obj[paramName].push(paramValue);
+                }
+            }
+        }
+    }
+    return obj;
+}
+
+jQuery(window).bind("load", function () {
+    const queryString_as = decodeURIComponent(window.location.search);
+    const urlParams_as = new URLSearchParams(queryString_as);
+    urlParams_as.delete('order');
+    urlParams_as.delete('sort');
+    urlParams_as.delete('page');
+
+    const
+    keys = urlParams_as.keys(),
+    values = urlParams_as.values(),
+    entries = urlParams_as.entries();
+
+    for(const entry of entries) {
+        if(entry[1]!=''){
+            if (isNaN(entry[1]) || entry[0] === 'fulltext_search') {
+                if(entry[1]!='All') {
+                    var elemClass=`${entry[0].split(' ').join('-')}`;
+                    jQuery("#advanced-search-form").after('<div class= "filter-tag">' + `${entry[1]}` + '<span id="'+elemClass+'" class="tagClose"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>');
+                }
+            } else if (entry[0] === 'field_states') {
+                //var stateVal = jQuery("[name*='field_states'] :selected").text();
+                var stateVal = getStateAbbr(entry[1]);
+                if(entry[1]!='All') {
+                    var elemClass=`${entry[0]}`;
+                    jQuery("#advanced-search-form").after('<div class= "filter-tag">' + stateVal + '<span id="'+elemClass+'" class="tagClose"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>');
+                }
+            } else if (entry[0].includes('field_fiscal_year_text')){
+                var tagText = getYearChoice(entry[1]);
+                var elemClass=`${entry[0]}`;
+                jQuery("#advanced-search-form").after('<div class= "filter-tag">' + tagText + '<span id="'+elemClass+'" class="tagClose"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>');
+            } else if(entry[0].includes('field_goal_description')) {
+                var tagText = getAgencyGoal(entry[1]);
+                var elemClass=`${entry[0]}`;
+                jQuery("#advanced-search-form").after('<div class= "filter-tag">' + tagText + '<span id="'+elemClass+'" class="tagClose"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>');
+	    }
+        }
+        addTagCloseAction();
+    }
+});
+
+function addTagCloseAction() {
+    jQuery(".tagClose").click(function(){
+        var urlidparam = encodeURIComponent((this.id));
+        urlidparam= urlidparam.split('-').join('+');
+        var originalURL = window.location.href;
+        var alteredURL = removeParam(urlidparam, originalURL);
+        window.location.href= alteredURL;
+    });
+}
+
+
+function removeParam(keyVal, sourceURLVal) {
+    key = decodeURIComponent(keyVal);
+    sourceURL = decodeURIComponent(sourceURLVal);
+    var rtn = sourceURL.split("?")[0],
+    param,
+    params_arr = [],
+    queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+    if (queryString !== "") {
+        params_arr = queryString.split("&");
+        for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+            param = params_arr[i].split("=")[0];
+            if (param === key) {
+                params_arr.splice(i, 1);
+            }
+        }
+        rtn = rtn + "?" + params_arr.join("&");
+    }
+    return rtn;
+}
+
+//sidebar showMore function
+
+const collapsed = 'show-more--collapsed';
+
+let hasRan = false;
+
+function registerShowMore($) {
+    if (hasRan) return; 
+    var $wrapper = $('[data-drupal-selector="views-exposed-form-advanced-search-page-1"]')
+    if (! $wrapper.length) return;
+
+    hasRan = true;
+    $checkboxes = $wrapper.find('[data-drupal-selector="edit-field-fiscal-year-text"] .form-checkboxes')
+    $checkboxes.addClass(collapsed);
+
+    $wrapper.find('.show-more-btn').click(function(event) {
+        event.preventDefault();
+        $(event.currentTarget).text(
+            $checkboxes.hasClass(collapsed) 
+                ? 'Show less' 
+                : 'Show more'
+        )
+
+        $checkboxes.toggleClass(collapsed);
+
+    })
+}
+
+(function($, Drupal) {
+
+    'use strict';
+
+    Drupal.behaviors.show_more = {
+        attach: function(context, settings) {
+            registerShowMore($);
+        }
+    };
+})(jQuery, Drupal);
+
+function getAgencyGoal(id) {
+  let agency_goal = new Map([
+    ["1", "Lifelong Learning"],
+    ["2", "Capacity/Community Engagement"],
+    ["3", "Collections Stewardship/Access"],
+  ]);
+
+  return agency_goal.get(id);
+}
+
+function getStateAbbr(id) {
+  let state_abbr = new Map([
+    ["309", "AK"],
+    ["320", "AL"],
+    ["321", "AR"],
+    ["315", "AS"],
+    ["269", "AZ"],
+    ["278", "CA"],
+    ["322", "CO"],
+    ["294", "CT"],
+    ["324", "DC"],
+    ["323", "DE"],
+    ["282", "FL"],
+    ["319", "FM"],
+    ["306", "GA"],
+    ["345", "GU"],
+    ["311", "HI"],
+    ["326", "IA"],
+    ["325", "ID"],
+    ["273", "IL"],
+    ["272", "IN"],
+    ["327", "KS"],
+    ["328", "KY"],
+    ["295", "LA"],
+    ["283", "MA"],
+    ["277", "MD"],
+    ["307", "ME"],
+    ["318", "MH"],
+    ["287", "MI"],
+    ["329", "MN"],
+    ["270", "MO"],
+    ["316", "MP"],
+    ["330", "MS"],
+    ["279", "MT"],
+    ["271", "NC"],
+    ["334", "ND"],
+    ["331", "NE"],
+    ["332", "NH"],
+    ["281", "NJ"],
+    ["333", "NM"],
+    ["310", "NV"],
+    ["275", "NY"],
+    ["335", "OH"],
+    ["280", "OK"],
+    ["336", "OR"],
+    ["274", "PA"],
+    ["346", "PR"],
+    ["317", "PW"],
+    ["337", "RI"],
+    ["338", "SC"],
+    ["339", "SD"],
+    ["268", "TN"],
+    ["340", "TX"],
+    ["341", "UT"],
+    ["276", "VA"],
+    ["347", "VI"],
+    ["342", "VT"],
+    ["302", "WA"],
+    ["308", "WI"],
+    ["343", "WV"],
+    ["344", "WY"]
+  ]);
+
+  return state_abbr.get(id);
+}
+
+function getYearChoice(id) {
+  let year_choice = new Map([
+      ['1',  "FY 2022"],
+      ['2',  "FY 2021"],
+      ['3',  "FY 2020"],
+      ['4',  "FY 2019"],
+      ['5',  "FY 2018"],
+      ['6',  "FY 2017"],
+      ['7',  "FY 2016"],
+      ['8',  "FY 2015"],
+      ['9',  "FY 2014"],
+      ['10',  "FY 2013"],
+      ['11', "FY 2012"],
+      ['12',  "FY 2011"],
+      ['13',  "FY 2010"],
+      ['14',  "FY 2009"],
+      ['15',  "FY 2008"],
+      ['16',  "FY 2007"],
+      ['17',  "FY 2006"],
+      ['18',  "FY 2005"],
+      ['19',  "FY 2004"],
+      ['20',  "FY 2003"],
+      ['21',  "FY 2002"],
+      ['22',  "FY 2001"],
+      ['23',  "FY 2000"],
+      ['24',  "FY 1999"],
+      ['25',  "FY 1998"],
+      ['26',  "FY 1997"]
+  ]);
+
+  return year_choice.get(id);
+}
