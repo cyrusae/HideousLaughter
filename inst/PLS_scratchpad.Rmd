@@ -58,3 +58,17 @@ subfiles <- purrr::map(.x = subfolders, .f = list.files,
 #here's their contents
 ```
 
+Process for getting desirable files out of this:
+- list location of all csv files
+- get their corresponding fiscal year (regex again)
+
+Here's our function wrangling logic
+- want row count for each of these files 
+- group by FY 
+- drop lowest rowcount 
+- rename highest to outlets
+- rename middle to admin entities
+
+TODO: Refactor this to iterate over years instead of doing it the hard way once it's working, or possibly instead of digging myself in deeper if I hit a wall 
+
+WISHLIST: Would like to not duplicate as much labor identifying FYs 
