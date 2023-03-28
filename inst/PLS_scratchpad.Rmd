@@ -3,6 +3,34 @@ title: "PLS scratchpad"
 output: html_notebook
 ---
 
+CLEANUP 
+- Prefix `base::` etc.
+- Make sure all packages are prefixed
+- Label steps
+- Clean up after yourself
+- Variable names that make sense 
+- Consistent file paths
+
+REFACTOR
+- `furrr`?
+- iterate over years instead of over file types
+- be selective about which files are extracted
+- retain identity of FYs 
+- eliminate for loops 
+- use `here` for file paths 
+- use functions 
+- delete unnecessary files
+
+REFACTOR x2: WHEN IT WORKS ALL THE WAY THROUGH
+- use `targets`
+- audit dependencies
+- move dependencies to package project as a whole 
+
+DOCUMENT
+- explain process
+- explain dependencies
+- explain potential pitfalls 
+
 ```{r}
 require(rvest) #scrape from IMLS
 require(data.table) #handle CSVs 
@@ -17,7 +45,7 @@ pls_url <- 'https://www.imls.gov/research-evaluation/data-collection/public-libr
 # s <- session(pls_url)
 # pg <- s |> rvest::read_html()
   # rvest::session_follow_link(css = 'ui-accordion-content')
-pls_url |> rvest::read_html() |> rvest::html_nodes(xpath = "//article//div[@data-ui-role]//div")
+# pls_url |> rvest::read_html() |> rvest::html_nodes(xpath = "//article//div[@data-ui-role]//div")
 ```
 ```{r}
 #downloaded the page to stop having to send them requests
