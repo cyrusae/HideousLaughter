@@ -26,10 +26,14 @@ REFACTOR x2: WHEN IT WORKS ALL THE WAY THROUGH
 - audit dependencies
 - move dependencies to package project as a whole 
 
+REFACTOR x3: MOVE TO CANONICAL PACKAGE FORM
+
 DOCUMENT
 - explain process
 - explain dependencies
 - explain potential pitfalls 
+- consistent coding style!!! (magrittr pipe over native I think...)
+- scratchpad files list 
 
 ```{r}
 require(rvest) #scrape from IMLS
@@ -37,6 +41,8 @@ require(data.table) #handle CSVs
 require(purrr) #do multiple things at once
 require(furrr) #same 
 ```
+
+### retrieve files 
 
 ```{r}
 pls_url <- 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey'
@@ -69,6 +75,8 @@ for (i in seq_along(pls_list)) {
 TODO: Make sure the above works live as well 
 
 
+### extract files 
+
 ```{r}
 pls_dir <- '../data/raw/PLS_csvs/'
 z <- list.files(path = pls_dir, pattern = '*.zip', full.names = T) #get list of zips 
@@ -100,3 +108,9 @@ Here's our function wrangling logic
 TODO: Refactor this to iterate over years instead of doing it the hard way once it's working, or possibly instead of digging myself in deeper if I hit a wall 
 
 WISHLIST: Would like to not duplicate as much labor identifying FYs 
+
+---
+
+2023.03.27, night: Okay yes I think the responsible thing to do is stop and back up to year-by-year handling. Although... `subfiles` is free batched test for doing that, I suppose.
+
+### process year-on-year `subfiles` 
