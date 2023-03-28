@@ -20,6 +20,7 @@ REFACTOR
 - use `here` for file paths 
 - use functions 
 - delete unnecessary files
+- consider being `polite` here 
 
 REFACTOR x2: WHEN IT WORKS ALL THE WAY THROUGH
 - use `targets`
@@ -27,13 +28,19 @@ REFACTOR x2: WHEN IT WORKS ALL THE WAY THROUGH
 - move dependencies to package project as a whole 
 
 REFACTOR x3: MOVE TO CANONICAL PACKAGE FORM
+- add unit tests 
 
 DOCUMENT
 - explain process
 - explain dependencies
-- explain potential pitfalls 
+- explain potential pitfalls (e.g., this should be resilient against new years of PLS data, but if they redesign their site we get to be sad)
 - consistent coding style!!! (magrittr pipe over native I think...)
 - scratchpad files list 
+
+CONTEMPLATE
+- what does unit testing for data integrity look like
+- toolkit for generating PLS data should exist but also clean PLS data should be pre-packaged 
+- get external reality checks for accessibility to third parties 
 
 ```{r}
 require(rvest) #scrape from IMLS
