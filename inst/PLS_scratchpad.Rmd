@@ -1,0 +1,60 @@
+---
+title: "PLS scratchpad"
+output: html_notebook
+---
+
+```{r}
+require(rvest) #scrape from IMLS
+require(data.table) #handle CSVs 
+require(purrr) #do multiple things at once
+require(furrr) #same 
+```
+
+```{r}
+pls_url <- 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey'
+```
+```{r}
+# s <- session(pls_url)
+# pg <- s |> rvest::read_html()
+  # rvest::session_follow_link(css = 'ui-accordion-content')
+pls_url |> rvest::read_html() |> rvest::html_nodes(xpath = "//article//div[@data-ui-role]//div")
+```
+```{r}
+#downloaded the page to stop having to send them requests
+#should work against actual url
+pg <- rvest::read_html('./data/raw/PLS_testpage.html') 
+pls_divs <- pg %>% 
+  rvest::html_elements('.ui-accordion-content') %>%
+  rvest::html_children() %>%
+  rvest::html_element('a')
+pls_list <- rvest::html_attrs(pls_divs)
+pls_list <- pls_list[grepl('*pls_fy', pls_list)]
+m <- regexpr('fy20..', pls_list)
+n <- substring(pls_list, m) 
+n <- substr(n, 1, 6) #strip filenames down to "fy20XX"
+for (i in seq_along(pls_list)) {
+  download.file(pls_list[[i]], paste0('data/raw/PLS_csvs/', n[i], '.zip')) ##TODO check working directory congruence here, if it doesn't run twice that's your problem 
+  #creates a sequence of "fy20XX.zip" files
+}
+```
+
+TODO: Make sure the above works live as well 
+
+
+```{r}
+pls_dir <- '../data/raw/PLS_csvs/'
+z <- list.files(path = pls_dir, pattern = '*.zip', full.names = T) #get list of zips 
+```
+
+```{r}
+purrr::map(.x = z, .f = unzip, exdir = pls_dir) #extract all zips
+# FY2014, 2015, and 2017 are weird, because we can't have nice things
+## TODO: extract only CSVs; make the zips with nested folders special cased or not terrible?
+subfolders <- list.dirs(path = pls_dir)[-1] #here's our problems
+```
+```{r}
+subfiles <- purrr::map(.x = subfolders, .f = list.files,
+                       pattern = '*.csv', full.names = TRUE)
+#here's their contents
+```
+
