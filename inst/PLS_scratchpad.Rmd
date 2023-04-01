@@ -160,4 +160,8 @@ identify_pls_csvs <- \(filenames) {
   
 }
 ```
+---
 
+## Take two: year-wise
+
+Long notebook is being fussy; GOTO #2 
