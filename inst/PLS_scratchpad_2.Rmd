@@ -1,0 +1,117 @@
+---
+title: "PLS scratchpad 2"
+output: html_notebook
+---
+
+
+REFACTOR
+- `furrr`?
+- iterate over years instead of over file types
+- be selective about which files are extracted
+- retain identity of FYs 
+- eliminate for loops 
+- use `here` for file paths 
+- use functions 
+- delete unnecessary files
+- consider being `polite` here 
+
+REFACTOR x2: WHEN IT WORKS ALL THE WAY THROUGH
+- use `targets`
+- audit dependencies
+- move dependencies to package project as a whole 
+
+REFACTOR x3: MOVE TO CANONICAL PACKAGE FORM
+- add unit tests 
+
+DOCUMENT
+- explain process
+- explain dependencies
+- explain potential pitfalls (e.g., this should be resilient against new years of PLS data, but if they redesign their site we get to be sad)
+- consistent coding style!!! (magrittr pipe over native I think...)
+- scratchpad files list 
+
+CONTEMPLATE
+- what does unit testing for data integrity look like
+- toolkit for generating PLS data should exist but also clean PLS data should be pre-packaged 
+
+## get download URLs set up 
+```{r setup}
+require(rvest) #web scraping (access PLS site)
+require(stringr) #string management 
+require(magrittr) #pipe
+require(data.table) #manage data
+require(purrr) #make functions better
+require(furrr) #parallel processing 
+require(here) #file path management 
+ # TODO replace with lower-level `rprojroot` when able 
+require(assertthat) #expect conditions in functions/throw errors
+require(assertr) #data validation 
+
+url <- 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey'
+```
+```{r}
+pls <- rvest::read_html(url) %>% 
+  rvest::html_nodes(xpath = '//*[@data-ui-role="accordion"]') %>%
+  rvest::html_children() %>% #the accordion contains years
+  rvest::html_element('a') %>% #get the first link 
+  rvest::html_attrs() #get the url that link refers to
+pls <- pls[grepl('*pls_fy', pls)] #reduce to real links
+pls <- paste0('https://www.imls.gov', pls) #list of download URLs for zip files
+names(pls) <- stringr::str_extract(pls, 'fy20..') #list now has name of the FY each URL is for 
+```
+
+```{r}
+test <- pls[1]
+
+make_process_filepath <- \(vec) {
+  assertthat::is.string(vec) #expecting character vector of length 1
+  if (is_null(names(vec))) {
+    names(vec) <- stringr::str_extract(vec, 'fy20..')
+  } #assign name if missing somehow 
+  assertthat::assert_that(!is.null(names(vec)))
+  fp <- here::here('data', 'raw', 'PLS_csvs', names(vec))
+  if (!dir.exists(fp)) {
+    dir.create(fp)
+  } #create described directory
+  assertthat::is.dir(fp) #check for successful directory creation
+  assertthat::is.writeable(fp) #check that directory is writable
+  zipfile <- paste0(fp, '/', names(vec), '.zip')
+  if (!file.exists(zipfile)) { #check if this zip exists
+    download.file(url = vec, destfile = zipfile) #download if not
+  }
+  assertthat::is.readable(zipfile) #verify that seems to have worked
+  zip_contents <- grep('*.csv', #get only CSVs
+                       unzip(zipfile = zipfile, list = TRUE))
+  unzip(zipfile = zipfile, files = zip_contents)
+}
+```
+```{r}
+test <- pls[1]
+assertthat::is.string(test)
+if (is.null(names(test))) {
+  names(test) <- stringr::str_extract(test, 'fy20..')
+}
+assertthat::assert_that(!is.null(names(test)))
+fp <- here::here('data', 'raw', 'PLS_csvs', names(test))
+if (!dir.exists(fp)) {
+  dir.create(fp)
+}
+assertthat::is.writeable(fp)
+zipfile <- paste0(fp, '/', names(test), '.zip')
+if (!file.exists(zipfile)) {
+  download.file(url = test, destfile = zipfile)
+}
+assertthat::is.readable(zipfile)
+zip_contents <- grep('*.csv$', #find only the CSV files 
+                     unzip(zipfile = zipfile, list = TRUE)$Name,
+                     ignore.case = TRUE, value = TRUE)
+unzip(zipfile = zipfile, files = zip_contents,
+      exdir = fp) #put the CSV files in the /fy20XX/ directory
+list.files()
+```
+
+
+- Zips one-by-one
+- Selective unzipping
+- Identify relevant files 
+- Resave 
