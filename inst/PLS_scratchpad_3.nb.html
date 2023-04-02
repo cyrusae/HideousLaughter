@@ -1760,12 +1760,12 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGV2dG9vbHM6OmxvYWRfYWxsKClcblxuYGBgIn0= -->
-<pre class="r"><code>devtools::load_all()
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGV2dG9vbHM6OmxvYWRfYWxsKClcbmBgYCJ9 -->
+<pre class="r"><code>devtools::load_all()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoi4oS5IExvYWRpbmcgSGlkZW91c0xhdWdodGVyXG4ifQ== -->
-<pre><code>ℹ Loading HideousLaughter</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUXVpdHRpbmcgZnJvbSBsaW5lcyA3LTggKFBMU19zY3JhdGNocGFkXzMuUm1kKSBcbuKEuSBMb2FkaW5nIEhpZGVvdXNMYXVnaHRlclxuIn0= -->
+<pre><code>Quitting from lines 7-8 (PLS_scratchpad_3.Rmd) 
+ℹ Loading HideousLaughter</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1774,8 +1774,34 @@ extraction, and initial csv sanitization - Want to be able to delete
 unneeded files (consider temp directory? this depends a lot on what I
 want the failure state to be?)</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxzIDwtIGdldF9wbHNfdXJscygpXG5gYGAifQ== -->
+<pre class="r"><code>pls &lt;- get_pls_urls()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXh0cmFjdCA8LSAnZnkyMC4uJ1xuaGVyZSA8LSAnZGF0YS9yYXcvUExTX2NzdnMnXG5cbmFzc2VydHRoYXQ6OmlzLnN0cmluZyh1cmwpICNEaWQgd2UgZ2V0IGEgVVJMIHRoYXQgd2UgY2FuIHBpbmdcbmFzc2VydHRoYXQ6OmlzLnN0cmluZyhoZXJlKSAjSXMgdGhlIGRlc2lyZWQgcGF0aCB2aWFibGVcbmlmIChpcy5udWxsKG5hbWVzKHVybCkpKSB7XG4gIGZ5IDwtIHN0cmluZ3I6OnN0cl9leHRyYWN0KHVybCwgZXh0cmFjdClcbiAgYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQobGVuZ3RoKGZ5KSA9PSBsZW5ndGgoZXh0cmFjdCkpXG4gIG5hbWVzKHVybCkgPC0gZnlcbn1cbmZ5IDwtIG5hbWVzKHVybCkgI0dldCB0aGUgRlkgdmFsdWUgb3V0XG5mcCA8LSBwYXN0ZTAoaGVyZTo6aGVyZShoZXJlKSwgJy8nLCBmeSlcbmlmICghZGlyLmV4aXN0cyhmcCkpIGRpci5jcmVhdGUoZnApICNDcmVhdGUgZGlyZWN0b3J5IGlmIG5lZWRlZFxuYXNzZXJ0dGhhdDo6aXMud3JpdGVhYmxlKGZwKSAjQ2FuIHdlIHdyaXRlIHRvIHRoZSBkaXJlY3RvcnlcbnppcGZpbGUgPC0gcGFzdGUwKGZwLCAnLycsIGZ5LCAnLnppcCcpXG5gYGAifQ== -->
+<pre class="r"><code>extract &lt;- &#39;fy20..&#39;
+here &lt;- &#39;data/raw/PLS_csvs&#39;
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUExTIHNjcmF0Y2hwYWQgMyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3Igc2V0dXB9CmRldnRvb2xzOjpsb2FkX2FsbCgpCmBgYAoqKldoYXQgbm93PyoqCi0gV2FudCB0byB1bmlmeSB6aXAgZmlsZSByZXRyaWV2YWwsIGNzdiBleHRyYWN0aW9uLCBhbmQgaW5pdGlhbCBjc3Ygc2FuaXRpemF0aW9uCi0gV2FudCB0byBiZSBhYmxlIHRvIGRlbGV0ZSB1bm5lZWRlZCBmaWxlcyAoY29uc2lkZXIgdGVtcCBkaXJlY3Rvcnk/IHRoaXMgZGVwZW5kcyBhIGxvdCBvbiB3aGF0IEkgd2FudCB0aGUgZmFpbHVyZSBzdGF0ZSB0byBiZT8pCg==</div>
+assertthat::is.string(url) #Did we get a URL that we can ping
+assertthat::is.string(here) #Is the desired path viable
+if (is.null(names(url))) {
+  fy &lt;- stringr::str_extract(url, extract)
+  assertthat::assert_that(length(fy) == length(extract))
+  names(url) &lt;- fy
+}
+fy &lt;- names(url) #Get the FY value out
+fp &lt;- paste0(here::here(here), &#39;/&#39;, fy)
+if (!dir.exists(fp)) dir.create(fp) #Create directory if needed
+assertthat::is.writeable(fp) #Can we write to the directory
+zipfile &lt;- paste0(fp, &#39;/&#39;, fy, &#39;.zip&#39;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUExTIHNjcmF0Y2hwYWQgMyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3Igc2V0dXB9CmRldnRvb2xzOjpsb2FkX2FsbCgpCmBgYAoqKldoYXQgbm93PyoqCi0gV2FudCB0byB1bmlmeSB6aXAgZmlsZSByZXRyaWV2YWwsIGNzdiBleHRyYWN0aW9uLCBhbmQgaW5pdGlhbCBjc3Ygc2FuaXRpemF0aW9uCi0gV2FudCB0byBiZSBhYmxlIHRvIGRlbGV0ZSB1bm5lZWRlZCBmaWxlcyAoY29uc2lkZXIgdGVtcCBkaXJlY3Rvcnk/IHRoaXMgZGVwZW5kcyBhIGxvdCBvbiB3aGF0IEkgd2FudCB0aGUgZmFpbHVyZSBzdGF0ZSB0byBiZT8pCmBgYHtyfQpwbHMgPC0gZ2V0X3Bsc191cmxzKCkKYGBgCmBgYHtyfQpleHRyYWN0IDwtICdmeTIwLi4nCmhlcmUgPC0gJ2RhdGEvcmF3L1BMU19jc3ZzJwoKYXNzZXJ0dGhhdDo6aXMuc3RyaW5nKHVybCkgI0RpZCB3ZSBnZXQgYSBVUkwgdGhhdCB3ZSBjYW4gcGluZwphc3NlcnR0aGF0Ojppcy5zdHJpbmcoaGVyZSkgI0lzIHRoZSBkZXNpcmVkIHBhdGggdmlhYmxlCmlmIChpcy5udWxsKG5hbWVzKHVybCkpKSB7CiAgZnkgPC0gc3RyaW5ncjo6c3RyX2V4dHJhY3QodXJsLCBleHRyYWN0KQogIGFzc2VydHRoYXQ6OmFzc2VydF90aGF0KGxlbmd0aChmeSkgPT0gbGVuZ3RoKGV4dHJhY3QpKQogIG5hbWVzKHVybCkgPC0gZnkKfQpmeSA8LSBuYW1lcyh1cmwpICNHZXQgdGhlIEZZIHZhbHVlIG91dApmcCA8LSBwYXN0ZTAoaGVyZTo6aGVyZShoZXJlKSwgJy8nLCBmeSkKaWYgKCFkaXIuZXhpc3RzKGZwKSkgZGlyLmNyZWF0ZShmcCkgI0NyZWF0ZSBkaXJlY3RvcnkgaWYgbmVlZGVkCmFzc2VydHRoYXQ6OmlzLndyaXRlYWJsZShmcCkgI0NhbiB3ZSB3cml0ZSB0byB0aGUgZGlyZWN0b3J5CnppcGZpbGUgPC0gcGFzdGUwKGZwLCAnLycsIGZ5LCAnLnppcCcpCmBgYAoK</div>
 
 
 

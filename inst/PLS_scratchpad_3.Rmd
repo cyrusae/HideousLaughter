@@ -9,3 +9,24 @@ devtools::load_all()
 **What now?**
 - Want to unify zip file retrieval, csv extraction, and initial csv sanitization
 - Want to be able to delete unneeded files (consider temp directory? this depends a lot on what I want the failure state to be?)
+```{r}
+pls <- get_pls_urls()
+```
+```{r}
+extract <- 'fy20..'
+here <- 'data/raw/PLS_csvs'
+
+assertthat::is.string(url) #Did we get a URL that we can ping
+assertthat::is.string(here) #Is the desired path viable
+if (is.null(names(url))) {
+  fy <- stringr::str_extract(url, extract)
+  assertthat::assert_that(length(fy) == length(extract))
+  names(url) <- fy
+}
+fy <- names(url) #Get the FY value out
+fp <- paste0(here::here(here), '/', fy)
+if (!dir.exists(fp)) dir.create(fp) #Create directory if needed
+assertthat::is.writeable(fp) #Can we write to the directory
+zipfile <- paste0(fp, '/', fy, '.zip')
+```
+
