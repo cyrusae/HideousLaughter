@@ -206,3 +206,19 @@ furrr::future_map(.x = year, .f = get_pls_csv)
 04/02 breakpoint: Now that both halves of the functionality work, I'd like to combine get_pls_zip and get_pls_csv. Currently there's back-and-forth redundancy happening that wouldn't be an issue if metadata was persisting instead of being reduced to a return.
 
 GOTO scratchpad #3 maybe?
+
+But first:
+
+
+Let's pause and do some testing.
+
+```{r}
+pls <- get_pls_urls()
+```
+
+### Make a mock file for the PLS page (...again)
+
+```{r}
+
+```
+
