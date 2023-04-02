@@ -88,3 +88,8 @@ file.remove(zip_unneeded)
 ```
 
  - 4/01 question: do I actually want each FY to have its own subdirectory...? I guess it avoids collisions with other files? It may just be safer on balance. We'll see how it affects later processing. 
+ 
+Next:
+- Generalize to function
+- Test/run for all
+- Next phase of cleaning! 
