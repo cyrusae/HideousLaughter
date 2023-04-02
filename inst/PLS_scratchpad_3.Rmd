@@ -1,0 +1,11 @@
+---
+title: "PLS scratchpad 3"
+output: html_notebook
+---
+
+```{r setup}
+devtools::load_all()
+```
+**What now?**
+- Want to unify zip file retrieval, csv extraction, and initial csv sanitization
+- Want to be able to delete unneeded files (consider temp directory? this depends a lot on what I want the failure state to be?)
