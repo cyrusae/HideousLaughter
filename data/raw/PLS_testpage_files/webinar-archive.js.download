@@ -1,8 +1,0 @@
-if (jQuery('.view-id-events_and_webinars.view-display-id-page_4  #accordion').length) {
-  if (jQuery('.view-id-events_and_webinars.view-display-id-page_4  #accordion').find('h5:first > span').text().indexOf('Additional Topics')) {
-    var first = jQuery('.view-id-events_and_webinars.view-display-id-page_4  #accordion').find('.item-list.card.rownum-0');//header
-
-    first.parent().append(first);
-    jQuery('.view-id-events_and_webinars.view-display-id-page_4  #accordion').find('h5:first > span').click();//open first section
-  }
-}
