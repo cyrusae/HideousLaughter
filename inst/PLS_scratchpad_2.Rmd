@@ -26,7 +26,7 @@ require(assertr) #data validation
 
 url <- 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey'
 ```
-```{r}
+```{r urls}
 pls <- rvest::read_html(url) %>% 
   rvest::html_nodes(xpath = '//*[@data-ui-role="accordion"]') %>%
   rvest::html_children() %>% #the accordion contains years
@@ -37,7 +37,7 @@ pls <- paste0('https://www.imls.gov', pls) #list of download URLs for zip files
 names(pls) <- stringr::str_extract(pls, 'fy20..') #list now has name of the FY each URL is for 
 ```
 
-```{r}
+```{r zips}
 # TODO: Generalize into a function and test (it now works for individuals)
 test <- pls[1]
 assertthat::is.string(test)
@@ -93,3 +93,12 @@ Next:
 - Generalize to function
 - Test/run for all
 - Next phase of cleaning! 
+
+---
+
+Intended behavior: Phases of functions in `pls.R`
+1. `get_pls_urls()` -- finished(!) -- returns a vector of desirable URLs with FYs as names (see above `{r urls}`)
+2. `(name tk)` -- ingests one item from (1), downloads zip file, unpacks it, identifies and renames the outlet and AE response files, bins the rest, returns path to outlet and AE files.
+3. `(name tk)` -- takes result of (2), removes known NA-equivalent values ("M" and whole negative integers and the nonresponse flags), saves clean CSV (intended/hoped-for behavior: have this mean more of the data types are correct the first time). (*TODO:* Can some date handling/sanitization happen here or does it need to be later?)
+4. `(chore tk)` -- figure out best way to vectorize (2) and (3) over the results of (1) without duplicating work
+5. **(regroup for strategy here)** -- this is the part where we get to actually combine the files. Alexander if you don't stop and reevaluate how to do so when you get here I will punt you like the football.
