@@ -94,6 +94,9 @@ get_pls_zip <- \(url = url,
   file.rename(from = zip_results$path,
               to = zip_results$filename)
   res <- zip_results$filename #return the relevant files
+  fil <- list.files(path = fp, full.names = TRUE) %>%
+    setdiff(c(res, zipfile)) #identify other contents of FY folder that aren't the zip or the desirable CSVs
+  file.remove(fil) #remove them
   names(res) <- stringr::str_extract(res, extract)
   res
 }
