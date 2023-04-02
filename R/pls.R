@@ -41,6 +41,12 @@ get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collectio
 
 #' Retrieve CSVs from IMLS zip file
 #'
+#' @description
+#' Download a single zip file from the IMLS website, extract only the contents that are CSV files, identify and rename the outlet and administrative entity PLS responses, and return the paths to those files.
+#'
+#' @details
+#' Development concerns: Current use of `here` is more brittle than I want it to be but I haven't figured out what the better long-term way to handle that is. Currently deletes the files that aren't the original zip or the desirable raw CSVs on cleanup.
+#'
 #' @param url URL leading to a single zip of CSV files on the IMLS website (see `get_pls_urls()`).
 #' @param extract Regex to determine name scheme for FY extraction. Default `'fy20..'` (produces results like `'fy2045'`).
 #' @param here String describing the intended destination path. Default `'data/raw/PLS_csvs'`. Needs refinement as a feature.
