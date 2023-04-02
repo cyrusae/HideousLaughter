@@ -39,16 +39,15 @@ get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collectio
   pls #return list (character vector) of URLs with their FYs as names
 }
 
-#' Title
+#' Retrieve CSVs from IMLS zip file
 #'
-#' @param url
+#' @param url URL leading to a single zip of CSV files on the IMLS website (see `get_pls_urls()`).
 #' @param extract Regex to determine name scheme for FY extraction. Default `'fy20..'` (produces results like `'fy2045'`).
-#' @param here
+#' @param here String describing the intended destination path. Default `'data/raw/PLS_csvs'`. Needs refinement as a feature.
 #'
-#' @return
+#' @returns A named character vector of length 2 containing the paths to the admin and outlet PLS responses.
 #' @export
 #'
-#' @examples
 get_pls_zip <- \(url = url,
                  extract = 'fy20..',
                  here = 'data/raw/PLS_csvs') {
@@ -89,4 +88,6 @@ get_pls_zip <- \(url = url,
   file.rename(from = zip_results$path,
               to = zip_results$filename)
   res <- zip_results$filename #return the relevant files
+  names(res) <- stringr::str_extract(res, extract)
+  res
 }
