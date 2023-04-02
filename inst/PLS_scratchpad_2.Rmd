@@ -3,11 +3,6 @@ title: "PLS scratchpad 2"
 output: html_notebook
 ---
 
-REFACTOR
-- `furrr`?
-- delete unnecessary files
-- consider being `polite` here 
-
 REFACTOR x2: WHEN IT WORKS ALL THE WAY THROUGH
 - use `targets`
 - audit dependencies
@@ -43,6 +38,7 @@ names(pls) <- stringr::str_extract(pls, 'fy20..') #list now has name of the FY e
 ```
 
 ```{r}
+# TODO: Generalize into a function and test (it now works for individuals)
 test <- pls[1]
 assertthat::is.string(test)
 if (is.null(names(test))) {
@@ -64,11 +60,31 @@ zip_contents <- grep('*.csv$', #find only the CSV files
                      ignore.case = TRUE, value = TRUE)
 unzip(zipfile = zipfile, files = zip_contents,
       exdir = fp) #put the CSV files in the /fy20XX/ directory
-#list.files()
+zip_contents <- grep('*.csv$', list.files(fp, full.names = TRUE),
+                     ignore.case = TRUE, value = TRUE)
+zip_results <- data.table::data.table(path = zip_contents,
+             filename = rep_len(names(test), 3),
+             nrows = NA)
+check_nrow <- \(filename) {
+  n <- data.table::fread(file = filename, select = 1L) %>%
+    nrow()
+}
+zip_nrows <- purrr::map_int(.x = zip_results$path, 
+                            .f = check_nrow)
+zip_results$nrows <- zip_nrows #label file by number of rows
+zip_results[nrows == max(zip_results$nrows), #max nrows will be outlet file
+            filename := paste0(fp, '/pls_', filename,
+                               '_outlet.csv')]
+zip_results <- zip_results[nrows != min(zip_results$nrows),] #drop state file
+zip_results[nrows == min(zip_results$nrows), #new minimum will be administrative entities file
+            filename := paste0(fp, '/pls_', filename, '_AE.csv')]
+file.rename(zip_results$path, zip_results$filename) #rename AE and outlet files 
+zip_unneeded <- list.files(fp, full.names = TRUE) %>%
+  setdiff(zip_results$filename) #files not matching our labelled desirable ones go into the void now
+file.remove(zip_unneeded)
+ # TODO add assertthat check that the desirable files are readable as expected 
+# TODO conversely, remove unnecessary assertthats once I can tell where I'm being--well--overly defensive 
+
 ```
 
-
-- Zips one-by-one
-- Selective unzipping
-- Identify relevant files 
-- Resave 
+ - 4/01 question: do I actually want each FY to have its own subdirectory...? I guess it avoids collisions with other files? It may just be safer on balance. We'll see how it affects later processing. 

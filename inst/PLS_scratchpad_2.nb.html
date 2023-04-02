@@ -1758,8 +1758,6 @@ display: none;
 
 
 <!-- rnb-text-begin -->
-<p>REFACTOR - <code>furrr</code>? - delete unnecessary files - consider
-being <code>polite</code> here</p>
 <p>REFACTOR x2: WHEN IT WORKS ALL THE WAY THROUGH - use
 <code>targets</code> - audit dependencies - move dependencies to package
 project as a whole</p>
@@ -1768,21 +1766,15 @@ project as a whole</p>
 <h2>get download URLs set up</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShydmVzdCkgI3dlYiBzY3JhcGluZyAoYWNjZXNzIFBMUyBzaXRlKVxucmVxdWlyZShzdHJpbmdyKSAjc3RyaW5nIG1hbmFnZW1lbnQgXG5yZXF1aXJlKG1hZ3JpdHRyKSAjcGlwZVxucmVxdWlyZShkYXRhLnRhYmxlKSAjbWFuYWdlIGRhdGFcbnJlcXVpcmUocHVycnIpICNtYWtlIGZ1bmN0aW9ucyBiZXR0ZXJcbnJlcXVpcmUoZnVycnIpICNwYXJhbGxlbCBwcm9jZXNzaW5nIFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShydmVzdCkgI3dlYiBzY3JhcGluZyAoYWNjZXNzIFBMUyBzaXRlKVxucmVxdWlyZShzdHJpbmdyKSAjc3RyaW5nIG1hbmFnZW1lbnQgXG5yZXF1aXJlKG1hZ3JpdHRyKSAjcGlwZVxucmVxdWlyZShkYXRhLnRhYmxlKSAjbWFuYWdlIGRhdGFcbnJlcXVpcmUocHVycnIpICNtYWtlIGZ1bmN0aW9ucyBiZXR0ZXJcbnJlcXVpcmUoZnVycnIpICNwYXJhbGxlbCBwcm9jZXNzaW5nIFxucmVxdWlyZShoZXJlKSAjZmlsZSBwYXRoIG1hbmFnZW1lbnQgXG4gIyBUT0RPIG1heWJlIHJlcGxhY2Ugd2l0aCBsb3dlci1sZXZlbCBgcnByb2pyb290YCB3aGVuIGFibGUgXG5yZXF1aXJlKGFzc2VydHRoYXQpICNleHBlY3QgY29uZGl0aW9ucyBpbiBmdW5jdGlvbnMvdGhyb3cgZXJyb3JzXG5yZXF1aXJlKGFzc2VydHIpICNkYXRhIHZhbGlkYXRpb24gXG5cbnVybCA8LSAnaHR0cHM6Ly93d3cuaW1scy5nb3YvcmVzZWFyY2gtZXZhbHVhdGlvbi9kYXRhLWNvbGxlY3Rpb24vcHVibGljLWxpYnJhcmllcy1zdXJ2ZXknXG5gYGAifQ== -->
 <pre class="r"><code>require(rvest) #web scraping (access PLS site)
 require(stringr) #string management 
 require(magrittr) #pipe
 require(data.table) #manage data
 require(purrr) #make functions better
-require(furrr) #parallel processing </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBmdXJyclxuV2FybmluZzogcGFja2FnZSDigJhmdXJycuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMi4zTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBmdXR1cmVcbldhcm5pbmc6IHBhY2thZ2Ug4oCYZnV0dXJl4oCZIHdhcyBidWlsdCB1bmRlciBSIHZlcnNpb24gNC4yLjNcbiJ9 -->
-<pre><code>Loading required package: furrr
-Warning: package ‘furrr’ was built under R version 4.2.3Loading required package: future
-Warning: package ‘future’ was built under R version 4.2.3</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShoZXJlKSAjZmlsZSBwYXRoIG1hbmFnZW1lbnQgXG5yZXF1aXJlKGFzc2VydHRoYXQpICNleHBlY3QgY29uZGl0aW9ucyBpbiBmdW5jdGlvbnMvdGhyb3cgZXJyb3JzXG5yZXF1aXJlKGFzc2VydHIpICNkYXRhIHZhbGlkYXRpb24gXG5cbnVybCA8LSAnaHR0cHM6Ly93d3cuaW1scy5nb3YvcmVzZWFyY2gtZXZhbHVhdGlvbi9kYXRhLWNvbGxlY3Rpb24vcHVibGljLWxpYnJhcmllcy1zdXJ2ZXknXG5gYGAifQ== -->
-<pre class="r"><code>require(here) #file path management 
+require(furrr) #parallel processing 
+require(here) #file path management 
+ # TODO maybe replace with lower-level `rprojroot` when able 
 require(assertthat) #expect conditions in functions/throw errors
 require(assertr) #data validation 
 
@@ -1804,25 +1796,67 @@ names(pls) &lt;- stringr::str_extract(pls, &#39;fy20..&#39;) #list now has name 
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MywibmNvbCI6Mywic3VtbWFyeSI6W119LCJyZGYiOiJINHNJQUFBQUFBQUFCbVZSeTA3Q1FCUzk5Q0doQ2FneElkRi9vQ0VZRTNkQ1FCSVRJc1JDeEZVemxpclZPaVh0VkkwcjQ0ZTQ4dy9jOHh0c1hMcnhJOUE3MHhraXBadDc3em5uUHM3MG9qTSt0TVlXQU9oZ2FBWFFUVXpCSEEyN3RXTkFCSXNDR0ZEaThSbEZlMElKc0pOMUNLSTY2RGx1OTZwUmQxdW43aXlkTk9xQjdTV1BrajFZc2YyVWhUN2JWT3l2RkE0anpQOHZBS2p3UlMyM2V2ZUtTV3Z3ODluRTJQeSs1Q1duTW40eGI1OXdmdkh4OWlYaS9IMVg4R3NPVEM4a1NTS3YxeVJZSFBTZHM3SEhaTGtsU3BidlpDOFI5V1duQXZYUnNJMWhtZGRTOHVDckxlcU5qSE1FMVlxZVQyL1pWREVkOUp3YlVZcWpKMXVOS2ZOamxkMU1xUDNtVHJFbWhCSDdKdVpMTmk4cVJqTVdSQlNIYWZ6L21ibm1RcHdEdGxQS2wwOXEzalNsOTdVanZrRFEyVmVXdWI2ZTg1V0dPc3hVWHRGcVFKVnpNeVRYZmlpTENwb1VIdTFaSEZEMS9oYWlpYzBpUnBUTzhxSlFJY0liTFA4QWVxMVJwN1lDQUFBPSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Length"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Date"],"name":[3],"type":["S3: POSIXct"],"align":["right"]}],"data":[{"1":"PLS_FY20_AE_pud20i.csv","2":"8149418","3":"2022-08-17 15:45:00"},{"1":"PLS_FY20_Outlet_pud20i.csv","2":"4434641","3":"2022-05-31 12:35:00"},{"1":"PLS_FY20_State_pud20i.csv","2":"43708","3":"2022-08-18 17:35:00"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUT0RPOiBHZW5lcmFsaXplIGludG8gYSBmdW5jdGlvbiBhbmQgdGVzdCAoaXQgbm93IHdvcmtzIGZvciBpbmRpdmlkdWFscylcbnRlc3QgPC0gcGxzWzFdXG5hc3NlcnR0aGF0Ojppcy5zdHJpbmcodGVzdClcbmlmIChpcy5udWxsKG5hbWVzKHRlc3QpKSkge1xuICBuYW1lcyh0ZXN0KSA8LSBzdHJpbmdyOjpzdHJfZXh0cmFjdCh0ZXN0LCAnZnkyMC4uJylcbn1cbmFzc2VydHRoYXQ6OmFzc2VydF90aGF0KCFpcy5udWxsKG5hbWVzKHRlc3QpKSlcbmZwIDwtIGhlcmU6OmhlcmUoJ2RhdGEnLCAncmF3JywgJ1BMU19jc3ZzJywgbmFtZXModGVzdCkpXG5pZiAoIWRpci5leGlzdHMoZnApKSB7XG4gIGRpci5jcmVhdGUoZnApXG59XG5hc3NlcnR0aGF0Ojppcy53cml0ZWFibGUoZnApXG56aXBmaWxlIDwtIHBhc3RlMChmcCwgJy8nLCBuYW1lcyh0ZXN0KSwgJy56aXAnKVxuaWYgKCFmaWxlLmV4aXN0cyh6aXBmaWxlKSkge1xuICBkb3dubG9hZC5maWxlKHVybCA9IHRlc3QsIGRlc3RmaWxlID0gemlwZmlsZSlcbn1cbmFzc2VydHRoYXQ6OmlzLnJlYWRhYmxlKHppcGZpbGUpXG56aXBfY29udGVudHMgPC0gZ3JlcCgnKi5jc3YkJywgI2ZpbmQgb25seSB0aGUgQ1NWIGZpbGVzIFxuICAgICAgICAgICAgICAgICAgICAgdW56aXAoemlwZmlsZSA9IHppcGZpbGUsIGxpc3QgPSBUUlVFKSROYW1lLFxuICAgICAgICAgICAgICAgICAgICAgaWdub3JlLmNhc2UgPSBUUlVFLCB2YWx1ZSA9IFRSVUUpXG51bnppcCh6aXBmaWxlID0gemlwZmlsZSwgZmlsZXMgPSB6aXBfY29udGVudHMsXG4gICAgICBleGRpciA9IGZwKSAjcHV0IHRoZSBDU1YgZmlsZXMgaW4gdGhlIC9meTIwWFgvIGRpcmVjdG9yeVxuemlwX2NvbnRlbnRzIDwtIGdyZXAoJyouY3N2JCcsIGxpc3QuZmlsZXMoZnAsIGZ1bGwubmFtZXMgPSBUUlVFKSxcbiAgICAgICAgICAgICAgICAgICAgIGlnbm9yZS5jYXNlID0gVFJVRSwgdmFsdWUgPSBUUlVFKVxuemlwX3Jlc3VsdHMgPC0gZGF0YS50YWJsZTo6ZGF0YS50YWJsZShwYXRoID0gemlwX2NvbnRlbnRzLFxuICAgICAgICAgICAgIGZpbGVuYW1lID0gcmVwX2xlbihuYW1lcyh0ZXN0KSwgMyksXG4gICAgICAgICAgICAgbnJvd3MgPSBOQSlcbmNoZWNrX25yb3cgPC0gXFwoZmlsZW5hbWUpIHtcbiAgbiA8LSBkYXRhLnRhYmxlOjpmcmVhZChmaWxlID0gZmlsZW5hbWUsIHNlbGVjdCA9IDFMKSAlPiVcbiAgICBucm93KClcbn1cbnppcF9ucm93cyA8LSBwdXJycjo6bWFwX2ludCgueCA9IHppcF9yZXN1bHRzJHBhdGgsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC5mID0gY2hlY2tfbnJvdylcbnppcF9yZXN1bHRzJG5yb3dzIDwtIHppcF9ucm93cyAjbGFiZWwgZmlsZSBieSBudW1iZXIgb2Ygcm93c1xuemlwX3Jlc3VsdHNbbnJvd3MgPT0gbWF4KHppcF9yZXN1bHRzJG5yb3dzKSwgI21heCBucm93cyB3aWxsIGJlIG91dGxldCBmaWxlXG4gICAgICAgICAgICBmaWxlbmFtZSA6PSBwYXN0ZTAoZnAsICcvcGxzXycsIGZpbGVuYW1lLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICdfb3V0bGV0LmNzdicpXVxuemlwX3Jlc3VsdHMgPC0gemlwX3Jlc3VsdHNbbnJvd3MgIT0gbWluKHppcF9yZXN1bHRzJG5yb3dzKSxdICNkcm9wIHN0YXRlIGZpbGVcbnppcF9yZXN1bHRzW25yb3dzID09IG1pbih6aXBfcmVzdWx0cyRucm93cyksICNuZXcgbWluaW11bSB3aWxsIGJlIGFkbWluaXN0cmF0aXZlIGVudGl0aWVzIGZpbGVcbiAgICAgICAgICAgIGZpbGVuYW1lIDo9IHBhc3RlMChmcCwgJy9wbHNfJywgZmlsZW5hbWUsICdfQUUuY3N2JyldXG5maWxlLnJlbmFtZSh6aXBfcmVzdWx0cyRwYXRoLCB6aXBfcmVzdWx0cyRmaWxlbmFtZSkgI3JlbmFtZSBBRSBhbmQgb3V0bGV0IGZpbGVzIFxuemlwX3VubmVlZGVkIDwtIGxpc3QuZmlsZXMoZnAsIGZ1bGwubmFtZXMgPSBUUlVFKSAlPiVcbiAgc2V0ZGlmZih6aXBfcmVzdWx0cyRmaWxlbmFtZSkgI2ZpbGVzIG5vdCBtYXRjaGluZyBvdXIgbGFiZWxsZWQgZGVzaXJhYmxlIG9uZXMgZ28gaW50byB0aGUgdm9pZCBub3dcbmZpbGUucmVtb3ZlKHppcF91bm5lZWRlZClcbiAjIFRPRE8gYWRkIGFzc2VydHRoYXQgY2hlY2sgdGhhdCB0aGUgZGVzaXJhYmxlIGZpbGVzIGFyZSByZWFkYWJsZSBhcyBleHBlY3RlZCBcbiMgVE9ETyBjb252ZXJzZWx5LCByZW1vdmUgdW5uZWNlc3NhcnkgYXNzZXJ0dGhhdHMgb25jZSBJIGNhbiB0ZWxsIHdoZXJlIEknbSBiZWluZy0td2VsbC0tb3Zlcmx5IGRlZmVuc2l2ZSBcblxuYGBgIn0= -->
+<pre class="r"><code># TODO: Generalize into a function and test (it now works for individuals)
+test &lt;- pls[1]
+assertthat::is.string(test)
+if (is.null(names(test))) {
+  names(test) &lt;- stringr::str_extract(test, &#39;fy20..&#39;)
+}
+assertthat::assert_that(!is.null(names(test)))
+fp &lt;- here::here(&#39;data&#39;, &#39;raw&#39;, &#39;PLS_csvs&#39;, names(test))
+if (!dir.exists(fp)) {
+  dir.create(fp)
+}
+assertthat::is.writeable(fp)
+zipfile &lt;- paste0(fp, &#39;/&#39;, names(test), &#39;.zip&#39;)
+if (!file.exists(zipfile)) {
+  download.file(url = test, destfile = zipfile)
+}
+assertthat::is.readable(zipfile)
+zip_contents &lt;- grep(&#39;*.csv$&#39;, #find only the CSV files 
+                     unzip(zipfile = zipfile, list = TRUE)$Name,
+                     ignore.case = TRUE, value = TRUE)
+unzip(zipfile = zipfile, files = zip_contents,
+      exdir = fp) #put the CSV files in the /fy20XX/ directory
+zip_contents &lt;- grep(&#39;*.csv$&#39;, list.files(fp, full.names = TRUE),
+                     ignore.case = TRUE, value = TRUE)
+zip_results &lt;- data.table::data.table(path = zip_contents,
+             filename = rep_len(names(test), 3),
+             nrows = NA)
+check_nrow &lt;- \(filename) {
+  n &lt;- data.table::fread(file = filename, select = 1L) %&gt;%
+    nrow()
+}
+zip_nrows &lt;- purrr::map_int(.x = zip_results$path, 
+                            .f = check_nrow)
+zip_results$nrows &lt;- zip_nrows #label file by number of rows
+zip_results[nrows == max(zip_results$nrows), #max nrows will be outlet file
+            filename := paste0(fp, &#39;/pls_&#39;, filename,
+                               &#39;_outlet.csv&#39;)]
+zip_results &lt;- zip_results[nrows != min(zip_results$nrows),] #drop state file
+zip_results[nrows == min(zip_results$nrows), #new minimum will be administrative entities file
+            filename := paste0(fp, &#39;/pls_&#39;, filename, &#39;_AE.csv&#39;)]
+file.rename(zip_results$path, zip_results$filename) #rename AE and outlet files 
+zip_unneeded &lt;- list.files(fp, full.names = TRUE) %&gt;%
+  setdiff(zip_results$filename) #files not matching our labelled desirable ones go into the void now
+file.remove(zip_unneeded)
+ # TODO add assertthat check that the desirable files are readable as expected 
+# TODO conversely, remove unnecessary assertthats once I can tell where I&#39;m being--well--overly defensive 
+</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <ul>
-<li>Zips one-by-one</li>
-<li>Selective unzipping</li>
-<li>Identify relevant files</li>
-<li>Resave</li>
+<li>4/01 question: do I actually want each FY to have its own
+subdirectory…? I guess it avoids collisions with other files? It may
+just be safer on balance. We’ll see how it affects later
+processing.</li>
 </ul>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUExTIHNjcmF0Y2hwYWQgMiIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKUkVGQUNUT1IKLSBgZnVycnJgPwotIGRlbGV0ZSB1bm5lY2Vzc2FyeSBmaWxlcwotIGNvbnNpZGVyIGJlaW5nIGBwb2xpdGVgIGhlcmUgCgpSRUZBQ1RPUiB4MjogV0hFTiBJVCBXT1JLUyBBTEwgVEhFIFdBWSBUSFJPVUdICi0gdXNlIGB0YXJnZXRzYAotIGF1ZGl0IGRlcGVuZGVuY2llcwotIG1vdmUgZGVwZW5kZW5jaWVzIHRvIHBhY2thZ2UgcHJvamVjdCBhcyBhIHdob2xlIAoKUkVGQUNUT1IgeDM6IE1PVkUgVE8gQ0FOT05JQ0FMIFBBQ0tBR0UgRk9STQotIGFkZCB1bml0IHRlc3RzIAoKIyMgZ2V0IGRvd25sb2FkIFVSTHMgc2V0IHVwIApgYGB7ciBzZXR1cH0KcmVxdWlyZShydmVzdCkgI3dlYiBzY3JhcGluZyAoYWNjZXNzIFBMUyBzaXRlKQpyZXF1aXJlKHN0cmluZ3IpICNzdHJpbmcgbWFuYWdlbWVudCAKcmVxdWlyZShtYWdyaXR0cikgI3BpcGUKcmVxdWlyZShkYXRhLnRhYmxlKSAjbWFuYWdlIGRhdGEKcmVxdWlyZShwdXJycikgI21ha2UgZnVuY3Rpb25zIGJldHRlcgpyZXF1aXJlKGZ1cnJyKSAjcGFyYWxsZWwgcHJvY2Vzc2luZyAKcmVxdWlyZShoZXJlKSAjZmlsZSBwYXRoIG1hbmFnZW1lbnQgCiAjIFRPRE8gbWF5YmUgcmVwbGFjZSB3aXRoIGxvd2VyLWxldmVsIGBycHJvanJvb3RgIHdoZW4gYWJsZSAKcmVxdWlyZShhc3NlcnR0aGF0KSAjZXhwZWN0IGNvbmRpdGlvbnMgaW4gZnVuY3Rpb25zL3Rocm93IGVycm9ycwpyZXF1aXJlKGFzc2VydHIpICNkYXRhIHZhbGlkYXRpb24gCgp1cmwgPC0gJ2h0dHBzOi8vd3d3LmltbHMuZ292L3Jlc2VhcmNoLWV2YWx1YXRpb24vZGF0YS1jb2xsZWN0aW9uL3B1YmxpYy1saWJyYXJpZXMtc3VydmV5JwpgYGAKYGBge3J9CnBscyA8LSBydmVzdDo6cmVhZF9odG1sKHVybCkgJT4lIAogIHJ2ZXN0OjpodG1sX25vZGVzKHhwYXRoID0gJy8vKltAZGF0YS11aS1yb2xlPSJhY2NvcmRpb24iXScpICU+JQogIHJ2ZXN0OjpodG1sX2NoaWxkcmVuKCkgJT4lICN0aGUgYWNjb3JkaW9uIGNvbnRhaW5zIHllYXJzCiAgcnZlc3Q6Omh0bWxfZWxlbWVudCgnYScpICU+JSAjZ2V0IHRoZSBmaXJzdCBsaW5rIAogIHJ2ZXN0OjpodG1sX2F0dHJzKCkgI2dldCB0aGUgdXJsIHRoYXQgbGluayByZWZlcnMgdG8KcGxzIDwtIHBsc1tncmVwbCgnKnBsc19meScsIHBscyldICNyZWR1Y2UgdG8gcmVhbCBsaW5rcwpwbHMgPC0gcGFzdGUwKCdodHRwczovL3d3dy5pbWxzLmdvdicsIHBscykgI2xpc3Qgb2YgZG93bmxvYWQgVVJMcyBmb3IgemlwIGZpbGVzCm5hbWVzKHBscykgPC0gc3RyaW5ncjo6c3RyX2V4dHJhY3QocGxzLCAnZnkyMC4uJykgI2xpc3Qgbm93IGhhcyBuYW1lIG9mIHRoZSBGWSBlYWNoIFVSTCBpcyBmb3IgCmBgYAoKYGBge3J9CnRlc3QgPC0gcGxzWzFdCmFzc2VydHRoYXQ6OmlzLnN0cmluZyh0ZXN0KQppZiAoaXMubnVsbChuYW1lcyh0ZXN0KSkpIHsKICBuYW1lcyh0ZXN0KSA8LSBzdHJpbmdyOjpzdHJfZXh0cmFjdCh0ZXN0LCAnZnkyMC4uJykKfQphc3NlcnR0aGF0Ojphc3NlcnRfdGhhdCghaXMubnVsbChuYW1lcyh0ZXN0KSkpCmZwIDwtIGhlcmU6OmhlcmUoJ2RhdGEnLCAncmF3JywgJ1BMU19jc3ZzJywgbmFtZXModGVzdCkpCmlmICghZGlyLmV4aXN0cyhmcCkpIHsKICBkaXIuY3JlYXRlKGZwKQp9CmFzc2VydHRoYXQ6OmlzLndyaXRlYWJsZShmcCkKemlwZmlsZSA8LSBwYXN0ZTAoZnAsICcvJywgbmFtZXModGVzdCksICcuemlwJykKaWYgKCFmaWxlLmV4aXN0cyh6aXBmaWxlKSkgewogIGRvd25sb2FkLmZpbGUodXJsID0gdGVzdCwgZGVzdGZpbGUgPSB6aXBmaWxlKQp9CmFzc2VydHRoYXQ6OmlzLnJlYWRhYmxlKHppcGZpbGUpCnppcF9jb250ZW50cyA8LSBncmVwKCcqLmNzdiQnLCAjZmluZCBvbmx5IHRoZSBDU1YgZmlsZXMgCiAgICAgICAgICAgICAgICAgICAgIHVuemlwKHppcGZpbGUgPSB6aXBmaWxlLCBsaXN0ID0gVFJVRSkkTmFtZSwKICAgICAgICAgICAgICAgICAgICAgaWdub3JlLmNhc2UgPSBUUlVFLCB2YWx1ZSA9IFRSVUUpCnVuemlwKHppcGZpbGUgPSB6aXBmaWxlLCBmaWxlcyA9IHppcF9jb250ZW50cywKICAgICAgZXhkaXIgPSBmcCkgI3B1dCB0aGUgQ1NWIGZpbGVzIGluIHRoZSAvZnkyMFhYLyBkaXJlY3RvcnkKI2xpc3QuZmlsZXMoKQpgYGAKCgotIFppcHMgb25lLWJ5LW9uZQotIFNlbGVjdGl2ZSB1bnppcHBpbmcKLSBJZGVudGlmeSByZWxldmFudCBmaWxlcyAKLSBSZXNhdmUgCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUExTIHNjcmF0Y2hwYWQgMiIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKUkVGQUNUT1IgeDI6IFdIRU4gSVQgV09SS1MgQUxMIFRIRSBXQVkgVEhST1VHSAotIHVzZSBgdGFyZ2V0c2AKLSBhdWRpdCBkZXBlbmRlbmNpZXMKLSBtb3ZlIGRlcGVuZGVuY2llcyB0byBwYWNrYWdlIHByb2plY3QgYXMgYSB3aG9sZSAKClJFRkFDVE9SIHgzOiBNT1ZFIFRPIENBTk9OSUNBTCBQQUNLQUdFIEZPUk0KLSBhZGQgdW5pdCB0ZXN0cyAKCiMjIGdldCBkb3dubG9hZCBVUkxzIHNldCB1cCAKYGBge3Igc2V0dXB9CnJlcXVpcmUocnZlc3QpICN3ZWIgc2NyYXBpbmcgKGFjY2VzcyBQTFMgc2l0ZSkKcmVxdWlyZShzdHJpbmdyKSAjc3RyaW5nIG1hbmFnZW1lbnQgCnJlcXVpcmUobWFncml0dHIpICNwaXBlCnJlcXVpcmUoZGF0YS50YWJsZSkgI21hbmFnZSBkYXRhCnJlcXVpcmUocHVycnIpICNtYWtlIGZ1bmN0aW9ucyBiZXR0ZXIKcmVxdWlyZShmdXJycikgI3BhcmFsbGVsIHByb2Nlc3NpbmcgCnJlcXVpcmUoaGVyZSkgI2ZpbGUgcGF0aCBtYW5hZ2VtZW50IAogIyBUT0RPIG1heWJlIHJlcGxhY2Ugd2l0aCBsb3dlci1sZXZlbCBgcnByb2pyb290YCB3aGVuIGFibGUgCnJlcXVpcmUoYXNzZXJ0dGhhdCkgI2V4cGVjdCBjb25kaXRpb25zIGluIGZ1bmN0aW9ucy90aHJvdyBlcnJvcnMKcmVxdWlyZShhc3NlcnRyKSAjZGF0YSB2YWxpZGF0aW9uIAoKdXJsIDwtICdodHRwczovL3d3dy5pbWxzLmdvdi9yZXNlYXJjaC1ldmFsdWF0aW9uL2RhdGEtY29sbGVjdGlvbi9wdWJsaWMtbGlicmFyaWVzLXN1cnZleScKYGBgCmBgYHtyfQpwbHMgPC0gcnZlc3Q6OnJlYWRfaHRtbCh1cmwpICU+JSAKICBydmVzdDo6aHRtbF9ub2Rlcyh4cGF0aCA9ICcvLypbQGRhdGEtdWktcm9sZT0iYWNjb3JkaW9uIl0nKSAlPiUKICBydmVzdDo6aHRtbF9jaGlsZHJlbigpICU+JSAjdGhlIGFjY29yZGlvbiBjb250YWlucyB5ZWFycwogIHJ2ZXN0OjpodG1sX2VsZW1lbnQoJ2EnKSAlPiUgI2dldCB0aGUgZmlyc3QgbGluayAKICBydmVzdDo6aHRtbF9hdHRycygpICNnZXQgdGhlIHVybCB0aGF0IGxpbmsgcmVmZXJzIHRvCnBscyA8LSBwbHNbZ3JlcGwoJypwbHNfZnknLCBwbHMpXSAjcmVkdWNlIHRvIHJlYWwgbGlua3MKcGxzIDwtIHBhc3RlMCgnaHR0cHM6Ly93d3cuaW1scy5nb3YnLCBwbHMpICNsaXN0IG9mIGRvd25sb2FkIFVSTHMgZm9yIHppcCBmaWxlcwpuYW1lcyhwbHMpIDwtIHN0cmluZ3I6OnN0cl9leHRyYWN0KHBscywgJ2Z5MjAuLicpICNsaXN0IG5vdyBoYXMgbmFtZSBvZiB0aGUgRlkgZWFjaCBVUkwgaXMgZm9yIApgYGAKCmBgYHtyfQojIFRPRE86IEdlbmVyYWxpemUgaW50byBhIGZ1bmN0aW9uIGFuZCB0ZXN0IChpdCBub3cgd29ya3MgZm9yIGluZGl2aWR1YWxzKQp0ZXN0IDwtIHBsc1sxXQphc3NlcnR0aGF0Ojppcy5zdHJpbmcodGVzdCkKaWYgKGlzLm51bGwobmFtZXModGVzdCkpKSB7CiAgbmFtZXModGVzdCkgPC0gc3RyaW5ncjo6c3RyX2V4dHJhY3QodGVzdCwgJ2Z5MjAuLicpCn0KYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQoIWlzLm51bGwobmFtZXModGVzdCkpKQpmcCA8LSBoZXJlOjpoZXJlKCdkYXRhJywgJ3JhdycsICdQTFNfY3N2cycsIG5hbWVzKHRlc3QpKQppZiAoIWRpci5leGlzdHMoZnApKSB7CiAgZGlyLmNyZWF0ZShmcCkKfQphc3NlcnR0aGF0Ojppcy53cml0ZWFibGUoZnApCnppcGZpbGUgPC0gcGFzdGUwKGZwLCAnLycsIG5hbWVzKHRlc3QpLCAnLnppcCcpCmlmICghZmlsZS5leGlzdHMoemlwZmlsZSkpIHsKICBkb3dubG9hZC5maWxlKHVybCA9IHRlc3QsIGRlc3RmaWxlID0gemlwZmlsZSkKfQphc3NlcnR0aGF0Ojppcy5yZWFkYWJsZSh6aXBmaWxlKQp6aXBfY29udGVudHMgPC0gZ3JlcCgnKi5jc3YkJywgI2ZpbmQgb25seSB0aGUgQ1NWIGZpbGVzIAogICAgICAgICAgICAgICAgICAgICB1bnppcCh6aXBmaWxlID0gemlwZmlsZSwgbGlzdCA9IFRSVUUpJE5hbWUsCiAgICAgICAgICAgICAgICAgICAgIGlnbm9yZS5jYXNlID0gVFJVRSwgdmFsdWUgPSBUUlVFKQp1bnppcCh6aXBmaWxlID0gemlwZmlsZSwgZmlsZXMgPSB6aXBfY29udGVudHMsCiAgICAgIGV4ZGlyID0gZnApICNwdXQgdGhlIENTViBmaWxlcyBpbiB0aGUgL2Z5MjBYWC8gZGlyZWN0b3J5CnppcF9jb250ZW50cyA8LSBncmVwKCcqLmNzdiQnLCBsaXN0LmZpbGVzKGZwLCBmdWxsLm5hbWVzID0gVFJVRSksCiAgICAgICAgICAgICAgICAgICAgIGlnbm9yZS5jYXNlID0gVFJVRSwgdmFsdWUgPSBUUlVFKQp6aXBfcmVzdWx0cyA8LSBkYXRhLnRhYmxlOjpkYXRhLnRhYmxlKHBhdGggPSB6aXBfY29udGVudHMsCiAgICAgICAgICAgICBmaWxlbmFtZSA9IHJlcF9sZW4obmFtZXModGVzdCksIDMpLAogICAgICAgICAgICAgbnJvd3MgPSBOQSkKY2hlY2tfbnJvdyA8LSBcKGZpbGVuYW1lKSB7CiAgbiA8LSBkYXRhLnRhYmxlOjpmcmVhZChmaWxlID0gZmlsZW5hbWUsIHNlbGVjdCA9IDFMKSAlPiUKICAgIG5yb3coKQp9CnppcF9ucm93cyA8LSBwdXJycjo6bWFwX2ludCgueCA9IHppcF9yZXN1bHRzJHBhdGgsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgLmYgPSBjaGVja19ucm93KQp6aXBfcmVzdWx0cyRucm93cyA8LSB6aXBfbnJvd3MgI2xhYmVsIGZpbGUgYnkgbnVtYmVyIG9mIHJvd3MKemlwX3Jlc3VsdHNbbnJvd3MgPT0gbWF4KHppcF9yZXN1bHRzJG5yb3dzKSwgI21heCBucm93cyB3aWxsIGJlIG91dGxldCBmaWxlCiAgICAgICAgICAgIGZpbGVuYW1lIDo9IHBhc3RlMChmcCwgJy9wbHNfJywgZmlsZW5hbWUsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAnX291dGxldC5jc3YnKV0KemlwX3Jlc3VsdHMgPC0gemlwX3Jlc3VsdHNbbnJvd3MgIT0gbWluKHppcF9yZXN1bHRzJG5yb3dzKSxdICNkcm9wIHN0YXRlIGZpbGUKemlwX3Jlc3VsdHNbbnJvd3MgPT0gbWluKHppcF9yZXN1bHRzJG5yb3dzKSwgI25ldyBtaW5pbXVtIHdpbGwgYmUgYWRtaW5pc3RyYXRpdmUgZW50aXRpZXMgZmlsZQogICAgICAgICAgICBmaWxlbmFtZSA6PSBwYXN0ZTAoZnAsICcvcGxzXycsIGZpbGVuYW1lLCAnX0FFLmNzdicpXQpmaWxlLnJlbmFtZSh6aXBfcmVzdWx0cyRwYXRoLCB6aXBfcmVzdWx0cyRmaWxlbmFtZSkgI3JlbmFtZSBBRSBhbmQgb3V0bGV0IGZpbGVzIAp6aXBfdW5uZWVkZWQgPC0gbGlzdC5maWxlcyhmcCwgZnVsbC5uYW1lcyA9IFRSVUUpICU+JQogIHNldGRpZmYoemlwX3Jlc3VsdHMkZmlsZW5hbWUpICNmaWxlcyBub3QgbWF0Y2hpbmcgb3VyIGxhYmVsbGVkIGRlc2lyYWJsZSBvbmVzIGdvIGludG8gdGhlIHZvaWQgbm93CmZpbGUucmVtb3ZlKHppcF91bm5lZWRlZCkKICMgVE9ETyBhZGQgYXNzZXJ0dGhhdCBjaGVjayB0aGF0IHRoZSBkZXNpcmFibGUgZmlsZXMgYXJlIHJlYWRhYmxlIGFzIGV4cGVjdGVkIAojIFRPRE8gY29udmVyc2VseSwgcmVtb3ZlIHVubmVjZXNzYXJ5IGFzc2VydHRoYXRzIG9uY2UgSSBjYW4gdGVsbCB3aGVyZSBJJ20gYmVpbmctLXdlbGwtLW92ZXJseSBkZWZlbnNpdmUgCgpgYGAKCiAtIDQvMDEgcXVlc3Rpb246IGRvIEkgYWN0dWFsbHkgd2FudCBlYWNoIEZZIHRvIGhhdmUgaXRzIG93biBzdWJkaXJlY3RvcnkuLi4/IEkgZ3Vlc3MgaXQgYXZvaWRzIGNvbGxpc2lvbnMgd2l0aCBvdGhlciBmaWxlcz8gSXQgbWF5IGp1c3QgYmUgc2FmZXIgb24gYmFsYW5jZS4gV2UnbGwgc2VlIGhvdyBpdCBhZmZlY3RzIGxhdGVyIHByb2Nlc3NpbmcuIAo=</div>
 
 
 
