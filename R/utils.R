@@ -1,3 +1,4 @@
+# Functionality that doesn't belong in any other `.R` script file and is good to have around.
 
 #' Number of rows in a fread-legible file
 #'
