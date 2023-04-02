@@ -224,6 +224,6 @@ download.file(url = 'https://www.imls.gov/research-evaluation/data-collection/pu
 ```
 ```{r}
 writeLines(pls, con = 'PLS_URL_snapshot.txt')
-pls_read <- readLines(con = file.choose())
+# pls_read <- readLines(con = file.choose())
 ```
 
