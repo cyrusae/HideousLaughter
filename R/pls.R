@@ -72,7 +72,8 @@ get_pls_zip <- \(url = url,
   assertthat::is.writeable(fp) #make sure it is usable now
   zipfile <- paste0(fp, '/', fy, '.zip') #filename for zip download
   if (!file.exists(zipfile)) download.file(url = url,
-                                           destfile = zipfile)
+                                           destfile = zipfile,
+                                           quiet = TRUE)
   assertthat::is.readable(zipfile) #is downloaded zip readable?
   zip_contents <- grep('*.csv$', #find only the CSV files
                        unzip(zipfile = zipfile, list = TRUE)$Name,
