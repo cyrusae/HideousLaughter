@@ -22,7 +22,7 @@
 #' @example ${1: # pls <- get_pls_urls()}
 #'
 get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey',
-                  site = 'https://www.imls.gov/',
+                  site = 'https://www.imls.gov',
                   xpath = '//*[@data-ui-role="accordion"]',
                   element = 'a',
                   grepl = '*pls_fy',
