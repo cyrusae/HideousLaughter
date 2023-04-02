@@ -1,10 +1,9 @@
 Package: HideousLaughter
-Title: What the Package Does (One Line, Title Case)
+Title: Cyrus ETL Drafting
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Cyrus", "Eosphoros", , "cyrusae@uw.edu", role = c("aut", "cre"))
+Description: Download, clean, cross-reference, and load into database relevant observations from IMLS PLS data (since 2014) and USAC E-Rate data (since 2015) with as little long-term human intervention as (in)humanly possible.
 License: MIT + file LICENSE
 Suggests: 
     testthat (>= 3.0.0)
