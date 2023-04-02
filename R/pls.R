@@ -45,7 +45,7 @@ get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collectio
 #' Download a single zip file from the IMLS website, extract only the contents that are CSV files, identify and rename the outlet and administrative entity PLS responses, and return the paths to those files.
 #'
 #' @details
-#' Development concerns: Current use of `here` is more brittle than I want it to be but I haven't figured out what the better long-term way to handle that is. Currently deletes the files that aren't the original zip or the desirable raw CSVs on cleanup.
+#' Development concerns: Current use of `here` is more brittle than I want it to be but I haven't figured out what the better long-term way to handle that is. Currently in need of a way to delete the unnecessary files--doesn't seem to work here.
 #'
 #' @param url URL leading to a single zip of CSV files on the IMLS website (see `get_pls_urls()`).
 #' @param extract Regex to determine name scheme for FY extraction. Default `'fy20..'` (produces results like `'fy2045'`).
@@ -94,9 +94,6 @@ get_pls_zip <- \(url = url,
   file.rename(from = zip_results$path,
               to = zip_results$filename)
   res <- zip_results$filename #return the relevant files
-  fil <- list.files(path = fp, full.names = TRUE) %>%
-    setdiff(c(res, zipfile)) #identify other contents of FY folder that aren't the zip or the desirable CSVs
-  file.remove(fil) #remove them
   names(res) <- stringr::str_extract(res, extract)
   res
 }
