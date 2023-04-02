@@ -219,6 +219,11 @@ pls <- get_pls_urls()
 ### Make a mock file for the PLS page (...again)
 
 ```{r}
-
+pg <- rvest::read_html('https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey')
+download.file(url = 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey', destfile = here::here('testpage.html'))
+```
+```{r}
+writeLines(pls, con = 'PLS_URL_snapshot.txt')
+pls_read <- readLines(con = file.choose())
 ```
 
