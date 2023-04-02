@@ -155,9 +155,25 @@ year <- get_pls_zip(pls[1])
 
 
 3. `(name tk)` -- takes result of (2), removes known NA-equivalent values ("M" and whole negative integers and the nonresponse flags), saves clean CSV (intended/hoped-for behavior: have this mean more of the data types are correct the first time). (*TODO:* Can some date handling/sanitization happen here or does it need to be later?)
+```{r}
+pg <- data.table::fread(file = year[1])
+pg_cl <- pg 
+#pg_cl[pg_cl %ilike% '^-\\d{1}$', ] #no
+
+#There is a native data.table solution for this that won't require copying, but it's not currently working, so copies we shall have for now.
+pg_cl[pg_cl == -9] <- NA #Suppressed
+pg_cl[pg_cl == -4] <- NA #Closed
+pg_cl[pg_cl == -3] <- NA #Closed
+pg_cl[pg_cl == -1] <- NA #No response
+pg_cl[pg_cl == 'M'] <- NA #Overall 'M' is used as NA/Missing
+pg_cl[MICROF == 'N', MICROF := NA]  #MICROF uses N as NA/Missing
+pg_cl[RSTATUS == 3, RSTATUS := NA]  #Non-respondent, not imputed
+
+```
+
 
 ```{r}
-regex <- c('^-\d{1}$', '^M{1}$') #match single negative numbers (-1, -3, etc.) and the letter "M" (used for missing and suppressed data)
+
 ```
 
 
