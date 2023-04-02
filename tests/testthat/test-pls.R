@@ -20,4 +20,5 @@ test_that("PLS URL retrieval works", {
   names(snap) <- stringr::str_extract(snap, extract)
   expect_equal(pls, snap)
 })
+# Note: I feel like this is kind of all-or-nothing as a test but I'm honestly unsure what else I could do about the URL fetching specifically?
 
