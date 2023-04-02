@@ -173,7 +173,32 @@ pg_cl[RSTATUS == 3, RSTATUS := NA]  #Non-respondent, not imputed
 
 
 ```{r}
+get_pls_csv <- \(file, 
+                 extract = 'fy20..',
+                 here = 'data/raw/PLS_csvs') {
+  assertthat::is.readable(file)
+  filename <- stringr::str_extract(file, 'pls_\\w+_fy20..\\.csv$') #get the name of the file only, for later 
+  dest <- paste0(here::here(here), '/', filename)
+#  writeLines(file)
+#  writeLines(filename)
+  fy <- stringr::str_extract(filename, extract) #get FY for later 
+  src <- paste0(here::here(here), '/', fy)
+  writeLines(src)
+#  writeLines(fy)
+  dt <- data.table::fread(file = file)
+  dt[dt == -9] <- NA #Remove suppressed data
+  dt[dt == -4] <- NA #Remove for closures
+  dt[dt == -3] <- NA #Remove for closures
+  dt[dt == -1] <- NA #Remove unanswered questions
+  dt[dt == 'M'] <- NA #Remove missing values
+  if ('MICROF' %in% names(dt)) dt[MICROF == 'N', MICROF := NA] #NA for the MICROF field only
+  if ('RSTATUS' %in% names(dt)) dt[RSTATUS == 3, RSTATUS := NA] #remove nonrespondents 
+  data.table::fwrite(dt, file = dest)
+  assertthat::is.readable(path = dest)
+  dest
+}
 
+get_pls_csv(year[2])
 ```
 
 
