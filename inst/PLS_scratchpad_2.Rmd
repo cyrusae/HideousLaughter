@@ -179,12 +179,6 @@ get_pls_csv <- \(file,
   assertthat::is.readable(file)
   filename <- stringr::str_extract(file, 'pls_\\w+_fy20..\\.csv$') #get the name of the file only, for later 
   dest <- paste0(here::here(here), '/', filename)
-#  writeLines(file)
-#  writeLines(filename)
-  fy <- stringr::str_extract(filename, extract) #get FY for later 
-  src <- paste0(here::here(here), '/', fy)
-  writeLines(src)
-#  writeLines(fy)
   dt <- data.table::fread(file = file)
   dt[dt == -9] <- NA #Remove suppressed data
   dt[dt == -4] <- NA #Remove for closures
@@ -198,7 +192,9 @@ get_pls_csv <- \(file,
   dest
 }
 
-get_pls_csv(year[2])
+```
+```{r}
+furrr::future_map(.x = year, .f = get_pls_csv)
 ```
 
 
