@@ -98,7 +98,69 @@ Next:
 
 Intended behavior: Phases of functions in `pls.R`
 1. `get_pls_urls()` -- finished(!) -- returns a vector of desirable URLs with FYs as names (see above `{r urls}`)
+
+```{r}
+pls <- get_pls_urls()
+```
+
+
 2. `(name tk)` -- ingests one item from (1), downloads zip file, unpacks it, identifies and renames the outlet and AE response files, bins the rest, returns path to outlet and AE files.
+
+```{r}
+get_pls_zip <- \(url = url,
+                 extract = 'fy20..',
+                 here = 'data/raw/PLS_csvs') {
+  assertthat::is.string(url) #check for receiving one (1) url
+  assertthat::assert_that(is.character(here)) #check for viable path requests
+  if (is.null(names(url))) { #make sure we have a FY name
+    fy <- stringr::str_extract(url, extract)
+    assertthat::assert_that(nchar(fy) == nchar(extract))
+    names(url) <- fy
+  }
+  fy <- names(url)
+  fp <- paste0(here::here(here), '/', fy) #subdirectory named for the FY
+  if (!dir.exists(fp)) {
+    dir.create(fp)
+  } #create subdirectory if needed
+  assertthat::is.writeable(fp) #make sure it is usable now
+  zipfile <- paste0(fp, '/', fy, '.zip') #filename for zip download
+  if (!file.exists(zipfile)) download.file(url = url, 
+                                           destfile = zipfile)
+  assertthat::is.readable(zipfile) #is downloaded zip readable?
+  zip_contents <- grep('*.csv$', #find only the CSV files 
+                     unzip(zipfile = zipfile, list = TRUE)$Name,
+                     ignore.case = TRUE, value = TRUE)
+  unzip(zipfile = zipfile, files = zip_contents,
+      exdir = fp) #put the CSV files in the /fy20XX/ directory
+  zip_contents <- grep('*.csv$', #get paths to the unzipped CSVs
+                       list.files(fp, full.names = TRUE),
+                       ignore.case = TRUE, value = TRUE)
+  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
+  writeLines(zip_contents)
+  zip_nrows <- check_nrows(files = zip_contents)
+  zip_results <- data.table::data.table(path = zip_contents,
+                                        nrows = zip_nrows)
+  zip_results <- zip_results[nrows != min(zip_results$nrows), ] #remove the shortest CSV file (will be the state results)
+  zip_results[nrows == max(zip_results$nrows), #longest = outlets
+              filename := paste0(fp, '/pls_outlet_', fy, '.csv')]
+  zip_results[nrows == min(zip_results$nrows), #remaining = administrative entities 
+              filename := paste0(fp, '/pls_admin_', fy, '.csv')]
+  file.rename(from = zip_results$path, 
+              to = zip_results$filename)
+  zip_results$filename #return the relevant files 
+}
+```
+```{r}
+year <- get_pls_zip(pls[1])
+```
+
+
 3. `(name tk)` -- takes result of (2), removes known NA-equivalent values ("M" and whole negative integers and the nonresponse flags), saves clean CSV (intended/hoped-for behavior: have this mean more of the data types are correct the first time). (*TODO:* Can some date handling/sanitization happen here or does it need to be later?)
+
+```{r}
+regex <- c('^-\d{1}$', '^M{1}$') #match single negative numbers (-1, -3, etc.) and the letter "M" (used for missing and suppressed data)
+```
+
+
 4. `(chore tk)` -- figure out best way to vectorize (2) and (3) over the results of (1) without duplicating work
 5. **(regroup for strategy here)** -- this is the part where we get to actually combine the files. Alexander if you don't stop and reevaluate how to do so when you get here I will punt you like the football.
