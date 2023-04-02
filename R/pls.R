@@ -38,3 +38,55 @@ get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collectio
   names(pls) <- stringr::str_extract(pls, extract) #list now has name of the FY each URL is for
   pls #return list (character vector) of URLs with their FYs as names
 }
+
+#' Title
+#'
+#' @param url
+#' @param extract Regex to determine name scheme for FY extraction. Default `'fy20..'` (produces results like `'fy2045'`).
+#' @param here
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_pls_zip <- \(url = url,
+                 extract = 'fy20..',
+                 here = 'data/raw/PLS_csvs') {
+  assertthat::is.string(url) #check for receiving one (1) url
+  assertthat::assert_that(is.character(here)) #check for viable path requests
+  if (is.null(names(url))) { #make sure we have a FY name
+    fy <- stringr::str_extract(url, extract)
+    assertthat::assert_that(nchar(fy) == nchar(extract))
+    names(url) <- fy
+  }
+  fy <- names(url)
+  fp <- paste0(here::here(here), '/', fy) #subdirectory named for the FY
+  if (!dir.exists(fp)) {
+    dir.create(fp)
+  } #create subdirectory if needed
+  assertthat::is.writeable(fp) #make sure it is usable now
+  zipfile <- paste0(fp, '/', fy, '.zip') #filename for zip download
+  if (!file.exists(zipfile)) download.file(url = url,
+                                           destfile = zipfile)
+  assertthat::is.readable(zipfile) #is downloaded zip readable?
+  zip_contents <- grep('*.csv$', #find only the CSV files
+                       unzip(zipfile = zipfile, list = TRUE)$Name,
+                       ignore.case = TRUE, value = TRUE)
+  unzip(zipfile = zipfile, files = zip_contents,
+        exdir = fp) #put the CSV files in the /fy20XX/ directory
+  zip_contents <- grep('*.csv$', #get paths to the unzipped CSVs
+                       list.files(fp, full.names = TRUE),
+                       ignore.case = TRUE, value = TRUE)
+  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
+  zip_nrows <- check_nrows(files = zip_contents)
+  zip_results <- data.table::data.table(path = zip_contents,
+                                        nrows = zip_nrows)
+  zip_results <- zip_results[nrows != min(zip_results$nrows), ] #remove the shortest CSV file (will be the state results)
+  zip_results[nrows == max(zip_results$nrows), #longest = outlets
+              filename := paste0(fp, '/pls_outlet_', fy, '.csv')]
+  zip_results[nrows == min(zip_results$nrows), #remaining = administrative entities
+              filename := paste0(fp, '/pls_admin_', fy, '.csv')]
+  file.rename(from = zip_results$path,
+              to = zip_results$filename)
+  res <- zip_results$filename #return the relevant files
+}
