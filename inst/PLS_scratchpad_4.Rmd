@@ -12,17 +12,13 @@ Breakpoint 04/03:
 For `targets` usage I think I *don't* actually want to prioritize having a wrapper covering both of those, *but* it's probably a useful exercise because if it doesn't work that's weird and shouldn't happen?
 
 Cleanup:
-- Documentation more complete, there's some with less effort than the other and they should inherit parameter descriptions
-- They should also inherit default *parameters*, except the optional wrapper 
-- Test Roxygen build to see if I'm using it correctly, also 
+- [ ] Documentation more complete, there's some with less effort than the other and they should inherit parameter descriptions
+- [ ] They should also inherit default *parameters*, except the optional wrapper 
+- [x] Test Roxygen build to see if I'm using it correctly, also 
 - 
 
 ```{r}
-plot(cars)
+
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
