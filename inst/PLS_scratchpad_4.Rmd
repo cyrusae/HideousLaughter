@@ -1,0 +1,27 @@
+---
+title: "PLS scratchpad #4"
+output: html_notebook
+---
+
+Status: Component functions work with the zip files; adding features/error handling/options/check for duplicates/be better about testing. Ideally make file path situation less brittle; realistically revising that may end up happening when I have access to deploying it on the cloud anyway so I can live with "the code works but it'll need a hand moving into its new home" given how nebulous that home is for now. Also need to take a breather after this and do the non-Roxygen documentation on bookdown project.
+
+Breakpoint 04/03:
+- `get_pls_urls()` runs successfully to return relevant URLs
+- `get_pls_data()` is vectorized in parallel over URL results to process available years and clean up after itself; does not have other logging; isn't downloading duplicate zips but is overwriting existing CSVs 
+
+For `targets` usage I think I *don't* actually want to prioritize having a wrapper covering both of those, *but* it's probably a useful exercise because if it doesn't work that's weird and shouldn't happen?
+
+Cleanup:
+- Documentation more complete, there's some with less effort than the other and they should inherit parameter descriptions
+- They should also inherit default *parameters*, except the optional wrapper 
+
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
