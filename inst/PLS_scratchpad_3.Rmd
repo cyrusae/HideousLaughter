@@ -106,6 +106,6 @@ f_test <- furrr::future_map(.x = pls, .f = get_pls_data)
 ```{r}
 microbenchmark::microbenchmark(
   purrr::map(.x = pls, .f = get_pls_data), 
-  furrr::future_map(.x = pls, .f = get_pls_data), times = 2)
+  furrr::future_map(.x = pls, .f = get_pls_data), times =  10)
 ```
-
+`furrr` it is! (both min <10s but `purrr` max is <885s and `furrr` max is <30s so like no contest)
