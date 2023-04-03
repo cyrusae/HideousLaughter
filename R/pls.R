@@ -174,6 +174,9 @@ get_pls <- \(here = 'data/raw/PLS_csvs',
              element = 'a',
              grepl = '*pls_fy',
              extract = 'fy20..') {
+  # TODO:
+  ### 1) test this functionality;
+  ### 2) integrate checking for duplicated data (default to not running through any named FY that has both of its relevant CSVs in the top-level `here` directory)
   get_pls_urls(url = url, site = site, xpath = xpath,
                element = element, grepl = grepl,
                extract = extract) %>%
