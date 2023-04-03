@@ -93,4 +93,7 @@ test <- get_pls_data(url = pls['fy2017'])
 ```{r}
 purrr::map(.x = pls, .f = get_pls_data)
 ```
+```{r}
+furrr::future_map(.x = pls, .f = get_pls_data)
+```
 

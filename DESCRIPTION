@@ -6,6 +6,7 @@ Authors@R:
 Description: Download, clean, cross-reference, and load into database relevant observations from IMLS PLS data (since 2014) and USAC E-Rate data (since 2015) with as little long-term human intervention as (in)humanly possible.
 License: MIT + file LICENSE
 Suggests: 
+    microbenchmark,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
