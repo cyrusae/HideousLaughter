@@ -55,16 +55,16 @@ get_pls_data <- \(url, extract = 'fy20..',
     download.file(url = url, destfile = zipfile, quiet = TRUE)
   } #Download a file if it doesn't appear to exist yet 
   assertthat::is.readable(zipfile) #Did we get the zip successfully (or have it already)?
-  zip_contents <- grep('*.csv$', #find only the CSV files
+  zip_contents <- grep('\\w+\\.csv$', #find only the CSV files
                        unzip(zipfile = zipfile, 
                              list = TRUE)$Name, #Names only
                        ignore.case = TRUE, value = TRUE)
   unzip(zipfile = zipfile, files = zip_contents,
         exdir = fp) #put the CSV files in the /fy20XX/ directory
-  zip_contents <- grep('*.csv$', #get paths to the unzipped CSVs
+  zip_contents <- grep('\\w+\\.csv$', #get paths to the unzipped CSVs
                        list.files(fp, full.names = TRUE),
                        ignore.case = TRUE, value = TRUE)
-  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
+#  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
   zip_nrows <- check_nrows(files = zip_contents)
   zip_results <- data.table::data.table(
     path = zip_contents,
@@ -73,7 +73,8 @@ get_pls_data <- \(url, extract = 'fy20..',
   zip_results <- zip_results[nrows != min(zip_results$nrows), ] #remove the states file from consideration 
   zip_results[nrows == max(zip_results$nrows),
               response := 'outlet'] #largest file will be outlets
-  zip_results[response != 'outlet', response := 'admin'] #remaining will be administrative entities 
+  zip_results[nrows == min(zip_results$nrows), 
+              response := 'admin'] #remaining will be administrative entities 
   csvs <- furrr::future_map2_chr(.x = zip_results$path,
                                  .y = zip_results$response,
                                  .f = get_pls_csv,
@@ -86,3 +87,11 @@ get_pls_data <- \(url, extract = 'fy20..',
 }
 ```
 TODO: Test the above (currently has not run but is written); move to `pls.R`. 04/02 breakpoint (dinner).
+```{r}
+test <- get_pls_data(url = pls[1])
+```
+```{r}
+purrr::map(.x = pls,
+                  .f = get_pls_data)
+```
+
