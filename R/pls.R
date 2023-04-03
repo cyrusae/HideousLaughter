@@ -86,7 +86,7 @@ get_pls_csv <- \(file, response, fy, here) {
 #' @returns A named character vector of length 2 containing the paths to the admin and outlet PLS responses.
 #' @export
 #'
-get_pls_data <- \(url = url,
+get_pls_zip <- \(url = url,
                  extract = 'fy20..',
                  here = 'data/raw/PLS_csvs') {
   assertthat::is.string(url) #Did we get a URL that we can ping
@@ -136,4 +136,46 @@ get_pls_data <- \(url = url,
     setdiff(zipfile) #Get everything but the original zip
   unlink(process_files, recursive = TRUE) #Delete
   csvs #return paths to created files
+}
+
+#' Use list of PLS URLs
+#'
+#' @param pls Character vector of PLS URLs (see `get_pls_urls()`); expects to find names in `fy20..` format also.
+#' @param extract Fallback regex to get the names described above.
+#' @param here String describing the intended destination path. Default `'data/raw/PLS_csvs'`. Needs refinement as a feature.
+#'
+#' @return
+#' @export
+#'
+get_pls_data <- \(pls,
+                  extract = 'fy20..',
+                  here = 'data/raw/PLS_csvs') {
+  files <- furrr::future_map(.x = pls, .f = get_pls_data,
+                             extract = extract, here = here)
+}
+
+#' Title
+#'
+#' @description
+#' Check the IMLS website for PLS URLs, feed the resulting URLs into the processing functions, and return a list of usable files. Wraps all of the incremental PLS-processing functions.
+#'
+#' @inheritParams get_pls_url
+#'
+#' @param here String describing the intended destination path. Default `'data/raw/PLS_csvs'`. Needs refinement as a feature.
+#'
+#' @returns A list of file paths to the processed files.
+#' @export
+#'
+#' @examples ${1: # pls_csvs <- get_pls()}
+get_pls <- \(here = 'data/raw/PLS_csvs',
+             url = 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey',
+             site = 'https://www.imls.gov',
+             xpath = '//*[@data-ui-role="accordion"]',
+             element = 'a',
+             grepl = '*pls_fy',
+             extract = 'fy20..') {
+  get_pls_urls(url = url, site = site, xpath = xpath,
+               element = element, grepl = grepl,
+               extract = extract) %>%
+    get_pls_data(extract = extract, here = here)
 }
