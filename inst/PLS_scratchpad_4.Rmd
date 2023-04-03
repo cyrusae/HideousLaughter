@@ -14,7 +14,8 @@ For `targets` usage I think I *don't* actually want to prioritize having a wrapp
 Cleanup:
 - Documentation more complete, there's some with less effort than the other and they should inherit parameter descriptions
 - They should also inherit default *parameters*, except the optional wrapper 
-
+- Test Roxygen build to see if I'm using it correctly, also 
+- 
 
 ```{r}
 plot(cars)
