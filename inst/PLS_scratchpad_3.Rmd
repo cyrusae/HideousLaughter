@@ -61,11 +61,10 @@ get_pls_data <- \(url, extract = 'fy20..',
                        ignore.case = TRUE, value = TRUE)
   unzip(zipfile = zipfile, files = zip_contents,
         exdir = fp) #put the CSV files in the /fy20XX/ directory
-  zip_contents <- grep('\\w+\\.csv$', #get paths to the unzipped CSVs
-                       list.files(fp, full.names = TRUE),
-                       ignore.case = TRUE, value = TRUE)
-  writeLines(paste0('Zip contents: ', zip_contents))
-#  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
+  zip_contents <- list.files(path = fp, pattern = '\\w+\\.csv$',
+                             full.names = TRUE, recursive = TRUE,
+                             include.dirs = TRUE)
+  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
   zip_nrows <- check_nrows(files = zip_contents)
   zip_results <- data.table::data.table(
     path = zip_contents,
@@ -92,7 +91,6 @@ TODO: Test the above (currently has not run but is written); move to `pls.R`. 04
 test <- get_pls_data(url = pls['fy2017'])
 ```
 ```{r}
-purrr::map(.x = pls,
-                  .f = get_pls_data)
+purrr::map(.x = pls, .f = get_pls_data)
 ```
 
