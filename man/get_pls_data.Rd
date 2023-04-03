@@ -13,6 +13,9 @@ get_pls_data(pls, extract = "fy20..", here = "data/raw/PLS_csvs")
 
 \item{here}{String describing the intended destination path. Default \code{'data/raw/PLS_csvs'}. Needs refinement as a feature.}
 }
+\value{
+Returns a list of the filenames being produced.
+}
 \description{
 Use list of PLS URLs
 }

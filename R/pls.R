@@ -1,6 +1,5 @@
 # Functionality relating to downloading/extracting/preparing PLS data from the IMLS site.
 
-
 #' Retrieve URLs from IMLS
 #'
 #' @description
@@ -18,8 +17,6 @@
 #'
 #' @returns A named character vector of URLs to download and their corresponding reporting years.
 #' @export
-#'
-#' @example ${1: # pls <- get_pls_urls()}
 #'
 get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey',
                   site = 'https://www.imls.gov',
@@ -144,7 +141,7 @@ get_pls_zip <- \(url = url,
 #' @param extract Fallback regex to get the names described above.
 #' @param here String describing the intended destination path. Default `'data/raw/PLS_csvs'`. Needs refinement as a feature.
 #'
-#' @return
+#' @return Returns a list of the filenames being produced.
 #' @export
 #'
 get_pls_data <- \(pls,
@@ -154,19 +151,18 @@ get_pls_data <- \(pls,
                              extract = extract, here = here)
 }
 
-#' Title
+#' Wrapper function for all PLS processing
 #'
 #' @description
 #' Check the IMLS website for PLS URLs, feed the resulting URLs into the processing functions, and return a list of usable files. Wraps all of the incremental PLS-processing functions.
 #'
-#' @inheritParams get_pls_url
+#' @inheritParams get_pls_urls
 #'
 #' @param here String describing the intended destination path. Default `'data/raw/PLS_csvs'`. Needs refinement as a feature.
 #'
 #' @returns A list of file paths to the processed files.
 #' @export
 #'
-#' @examples ${1: # pls_csvs <- get_pls()}
 get_pls <- \(here = 'data/raw/PLS_csvs',
              url = 'https://www.imls.gov/research-evaluation/data-collection/public-libraries-survey',
              site = 'https://www.imls.gov',
