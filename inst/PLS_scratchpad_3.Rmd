@@ -98,10 +98,6 @@ TODO:
 - Make default option of not overwriting/optional overwriting
 - Test both
 - There are more things to move to `pls.R` self 
-```{r}
-p_test <- purrr::map(.x = pls, .f = get_pls_data)
-f_test <- furrr::future_map(.x = pls, .f = get_pls_data)
-```
 
 ```{r}
 microbenchmark::microbenchmark(
@@ -109,3 +105,18 @@ microbenchmark::microbenchmark(
   furrr::future_map(.x = pls, .f = get_pls_data), times =  10)
 ```
 `furrr` it is! (both min <10s but `purrr` max is <885s and `furrr` max is <30s so like no contest)
+
+```{r}
+profvis::profvis(get_pls_data(pls[1]))
+```
+```{r}
+profvis::profvis(furrr::future_map(.x = pls, .f = get_pls_data))
+```
+
+Well, the good news is that there's no obviously visible bottleneck here and the bad news is also that there's no obviously visible bottleneck here. Moving on it is
+
+```{r}
+profvis::profvis(get_pls_urls())
+microbenchmark::microbenchmark(get_pls_urls())
+```
+N.B. the URL retrieval itself takes between a quarter of a second and a second and a half, so that's okay
