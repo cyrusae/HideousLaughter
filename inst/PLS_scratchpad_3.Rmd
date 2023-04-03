@@ -64,6 +64,7 @@ get_pls_data <- \(url, extract = 'fy20..',
   zip_contents <- grep('\\w+\\.csv$', #get paths to the unzipped CSVs
                        list.files(fp, full.names = TRUE),
                        ignore.case = TRUE, value = TRUE)
+  writeLines(paste0('Zip contents: ', zip_contents))
 #  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
   zip_nrows <- check_nrows(files = zip_contents)
   zip_results <- data.table::data.table(
@@ -88,7 +89,7 @@ get_pls_data <- \(url, extract = 'fy20..',
 ```
 TODO: Test the above (currently has not run but is written); move to `pls.R`. 04/02 breakpoint (dinner).
 ```{r}
-test <- get_pls_data(url = pls[1])
+test <- get_pls_data(url = pls['fy2017'])
 ```
 ```{r}
 purrr::map(.x = pls,
