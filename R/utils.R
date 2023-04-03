@@ -30,3 +30,4 @@ check_nrows <- \(files = c()) {
   assertthat::assert_that(is.vector(files, mode = 'character'))
   ns <- furrr::future_map_int(.x = files, .f = check_nrow)
 }
+
