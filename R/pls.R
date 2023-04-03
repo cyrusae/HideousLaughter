@@ -39,13 +39,45 @@ get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collectio
   pls #return list (character vector) of URLs with their FYs as names
 }
 
+#' Process PLS CSV file (internal)
+#'
+#' @noRd
+#'
+#' @param file Path to file (inherited from wrapper function).
+#' @param response Either 'outlet' or 'admin'.
+#' @param fy Expects `fy20..` format used elsewhere.
+#' @param here See general concerns with `here` usage.
+#'
+#' @returns The filepath for the single successfully written file.
+#' @export
+#'
+get_pls_csv <- \(file, response, fy, here) {
+  assertthat::is.readable(file) #is the file readable?
+  assertthat::is.writeable(here::here(here)) #is the destination writable?
+  assertthat::is.string(fy) #is the input fy coherent?
+  assertthat::is.string(response) #do we know what the response is?
+  dest <- paste0(here::here(here), '/pls_',
+                 response, '_', fy, '.csv')
+  dt <- data.table::fread(file = file)
+  dt[dt == -9] <- NA #Remove suppressed data
+  dt[dt == -4] <- NA #Remove for closures
+  dt[dt == -3] <- NA #Remove for closures
+  dt[dt == -1] <- NA #Remove unanswered questions
+  dt[dt == 'M'] <- NA #Remove missing values
+  if ('MICROF' %in% names(dt)) dt[MICROF == 'N', MICROF := NA] #NA for the MICROF field only
+  if ('RSTATUS' %in% names(dt)) dt[RSTATUS == 3, RSTATUS := NA] #remove nonrespondents
+  data.table::fwrite(dt, file = dest)
+  assertthat::is.readable(path = dest)
+  dest #return successfully-written file
+}
+
 #' Retrieve CSVs from IMLS zip file
 #'
 #' @description
-#' Download a single zip file from the IMLS website, extract only the contents that are CSV files, identify and rename the outlet and administrative entity PLS responses, and return the paths to those files.
+#' Download a single zip file from the IMLS website (if needed), extract only the contents that are CSV files, identify and rename the outlet and administrative entity PLS responses, and return the paths to those files while deleting the intermediary files.
 #'
 #' @details
-#' Development concerns: Current use of `here` is more brittle than I want it to be but I haven't figured out what the better long-term way to handle that is. Currently in need of a way to delete the unnecessary files--doesn't seem to work here.
+#' Development concerns: Current use of `here` is more brittle than I want it to be but I haven't figured out what the better long-term way to handle that is.
 #'
 #' @param url URL leading to a single zip of CSV files on the IMLS website (see `get_pls_urls()`).
 #' @param extract Regex to determine name scheme for FY extraction. Default `'fy20..'` (produces results like `'fy2045'`).
@@ -54,47 +86,54 @@ get_pls_urls <- \(url = 'https://www.imls.gov/research-evaluation/data-collectio
 #' @returns A named character vector of length 2 containing the paths to the admin and outlet PLS responses.
 #' @export
 #'
-get_pls_zip <- \(url = url,
+get_pls_data <- \(url = url,
                  extract = 'fy20..',
                  here = 'data/raw/PLS_csvs') {
-  assertthat::is.string(url) #check for receiving one (1) url
-  assertthat::assert_that(is.character(here)) #check for viable path requests
-  if (is.null(names(url))) { #make sure we have a FY name
+  assertthat::is.string(url) #Did we get a URL that we can ping
+  assertthat::is.string(here) #Is the desired path viable
+  if (is.null(names(url))) {
     fy <- stringr::str_extract(url, extract)
-    assertthat::assert_that(nchar(fy) == nchar(extract))
+    assertthat::assert_that(length(fy) == length(extract))
     names(url) <- fy
   }
-  fy <- names(url)
-  fp <- paste0(here::here(here), '/', fy) #subdirectory named for the FY
-  if (!dir.exists(fp)) {
-    dir.create(fp)
-  } #create subdirectory if needed
-  assertthat::is.writeable(fp) #make sure it is usable now
-  zipfile <- paste0(fp, '/', fy, '.zip') #filename for zip download
-  if (!file.exists(zipfile)) download.file(url = url,
-                                           destfile = zipfile,
-                                           quiet = TRUE)
-  assertthat::is.readable(zipfile) #is downloaded zip readable?
-  zip_contents <- grep('*.csv$', #find only the CSV files
-                       unzip(zipfile = zipfile, list = TRUE)$Name,
+  fy <- names(url) #Get the FY value out
+  fp <- paste0(here::here(here), '/', fy)
+  if (!dir.exists(fp)) dir.create(fp) #Create directory if needed
+  #Note: still deciding whether we're keeping the zip files and deleting everything else or what
+  #TODO Add error handling once we're sure of cleanup steps
+  assertthat::is.writeable(fp) #Can we write to the directory
+  zipfile <- paste0(fp, '/', fy, '.zip')
+  if (!file.exists(zipfile)) {
+    download.file(url = url, destfile = zipfile, quiet = TRUE)
+  } #Download a file if it doesn't appear to exist yet
+  assertthat::is.readable(zipfile) #Did we get the zip successfully (or have it already)?
+  zip_contents <- grep('\\w+\\.csv$', #find only the CSV files
+                       unzip(zipfile = zipfile,
+                             list = TRUE)$Name, #Names only
                        ignore.case = TRUE, value = TRUE)
   unzip(zipfile = zipfile, files = zip_contents,
         exdir = fp) #put the CSV files in the /fy20XX/ directory
-  zip_contents <- grep('*.csv$', #get paths to the unzipped CSVs
-                       list.files(fp, full.names = TRUE),
-                       ignore.case = TRUE, value = TRUE)
+  zip_contents <- list.files(path = fp, pattern = '\\w+\\.csv$',
+                             full.names = TRUE, recursive = TRUE,
+                             include.dirs = TRUE)
   assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
   zip_nrows <- check_nrows(files = zip_contents)
-  zip_results <- data.table::data.table(path = zip_contents,
-                                        nrows = zip_nrows)
-  zip_results <- zip_results[nrows != min(zip_results$nrows), ] #remove the shortest CSV file (will be the state results)
-  zip_results[nrows == max(zip_results$nrows), #longest = outlets
-              filename := paste0(fp, '/pls_outlet_', fy, '.csv')]
-  zip_results[nrows == min(zip_results$nrows), #remaining = administrative entities
-              filename := paste0(fp, '/pls_admin_', fy, '.csv')]
-  file.rename(from = zip_results$path,
-              to = zip_results$filename)
-  res <- zip_results$filename #return the relevant files
-  names(res) <- stringr::str_extract(res, extract)
-  res
+  zip_results <- data.table::data.table(
+    path = zip_contents,
+    nrows = zip_nrows
+  ) #track features about the files that we'll need in a bit
+  zip_results <- zip_results[nrows != min(zip_results$nrows), ] #remove the states file from consideration
+  zip_results[nrows == max(zip_results$nrows),
+              response := 'outlet'] #largest file will be outlets
+  zip_results[nrows == min(zip_results$nrows),
+              response := 'admin'] #remaining will be administrative entities
+  csvs <- furrr::future_map2_chr(.x = zip_results$path,
+                                 .y = zip_results$response,
+                                 .f = get_pls_csv,
+                                 fy = fy, here = here)
+  # Clean up
+  process_files <- list.files(path = fp, full.names = TRUE) %>%
+    setdiff(zipfile) #Get everything but the original zip
+  unlink(process_files, recursive = TRUE) #Delete
+  csvs #return paths to created files
 }
