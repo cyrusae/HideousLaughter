@@ -15,7 +15,13 @@ Cleanup:
 - [ ] Documentation more complete, there's some with less effort than the other and they should inherit parameter descriptions
 - [ ] They should also inherit default *parameters*, except the optional wrapper 
 - [x] Test Roxygen build to see if I'm using it correctly, also 
-- 
+- [ ] Improve unit testing?
+
+Checking the `rvest` results from the IMLS page would require pinging it anyway so I might as well do that every time unless worried about having to be offline? This sounds like something that can wait to put safety rails on for a while yet, one way or another.
+
+Things to regroup:
+- [ ] Centralize that kind of idle thought/to-do list 
+- [ ] Note reasons for package here and bookdown project adjacent even if I'm planning on canonical non-Roxygen documentation waiting until there's canonical code too 
 
 ```{r}
 
