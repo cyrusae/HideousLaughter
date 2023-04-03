@@ -13,20 +13,76 @@ devtools::load_all()
 pls <- get_pls_urls()
 ```
 ```{r}
-extract <- 'fy20..'
-here <- 'data/raw/PLS_csvs'
-
-assertthat::is.string(url) #Did we get a URL that we can ping
-assertthat::is.string(here) #Is the desired path viable
-if (is.null(names(url))) {
-  fy <- stringr::str_extract(url, extract)
-  assertthat::assert_that(length(fy) == length(extract))
-  names(url) <- fy
+get_pls_csv <- \(file, response, fy, here) {
+  assertthat::is.readable(file) #is the file readable?
+  assertthat::is.writeable(here::here(here)) #is the destination writable?
+  assertthat::is.string(fy) #is the input fy coherent?
+  assertthat::is.string(response) #do we know what the response is?
+  dest <- paste0(here::here(here), '/pls_', 
+                 response, '_', fy, '.csv')
+  dt <- data.table::fread(file = file)
+  dt[dt == -9] <- NA #Remove suppressed data
+  dt[dt == -4] <- NA #Remove for closures
+  dt[dt == -3] <- NA #Remove for closures
+  dt[dt == -1] <- NA #Remove unanswered questions
+  dt[dt == 'M'] <- NA #Remove missing values
+  if ('MICROF' %in% names(dt)) dt[MICROF == 'N', MICROF := NA] #NA for the MICROF field only
+  if ('RSTATUS' %in% names(dt)) dt[RSTATUS == 3, RSTATUS := NA] #remove nonrespondents 
+  data.table::fwrite(dt, file = dest)
+  assertthat::is.readable(path = dest)
+  dest #return successfully-written file
 }
-fy <- names(url) #Get the FY value out
-fp <- paste0(here::here(here), '/', fy)
-if (!dir.exists(fp)) dir.create(fp) #Create directory if needed
-assertthat::is.writeable(fp) #Can we write to the directory
-zipfile <- paste0(fp, '/', fy, '.zip')
 ```
 
+```{r}
+get_pls_data <- \(url, extract = 'fy20..', 
+                  here = 'data/raw/PLS_csvs') {
+  assertthat::is.string(url) #Did we get a URL that we can ping
+  assertthat::is.string(here) #Is the desired path viable
+  if (is.null(names(url))) {
+    fy <- stringr::str_extract(url, extract)
+    assertthat::assert_that(length(fy) == length(extract))
+    names(url) <- fy
+  }
+  fy <- names(url) #Get the FY value out
+  fp <- paste0(here::here(here), '/', fy)
+  if (!dir.exists(fp)) dir.create(fp) #Create directory if needed
+    #Note: still deciding whether we're keeping the zip files and deleting everything else or what
+    #TODO Add error handling once we're sure of cleanup steps 
+  assertthat::is.writeable(fp) #Can we write to the directory
+  zipfile <- paste0(fp, '/', fy, '.zip')
+  if (!file.exists(zipfile)) {
+    download.file(url = url, destfile = zipfile, quiet = TRUE)
+  } #Download a file if it doesn't appear to exist yet 
+  assertthat::is.readable(zipfile) #Did we get the zip successfully (or have it already)?
+  zip_contents <- grep('*.csv$', #find only the CSV files
+                       unzip(zipfile = zipfile, 
+                             list = TRUE)$Name, #Names only
+                       ignore.case = TRUE, value = TRUE)
+  unzip(zipfile = zipfile, files = zip_contents,
+        exdir = fp) #put the CSV files in the /fy20XX/ directory
+  zip_contents <- grep('*.csv$', #get paths to the unzipped CSVs
+                       list.files(fp, full.names = TRUE),
+                       ignore.case = TRUE, value = TRUE)
+  assertthat::assert_that(length(zip_contents) == 3) #make sure there are specifically three CSV files here
+  zip_nrows <- check_nrows(files = zip_contents)
+  zip_results <- data.table::data.table(
+    path = zip_contents,
+    nrows = zip_nrows
+  ) #track features about the files that we'll need in a bit
+  zip_results <- zip_results[nrows != min(zip_results$nrows), ] #remove the states file from consideration 
+  zip_results[nrows == max(zip_results$nrows),
+              response := 'outlet'] #largest file will be outlets
+  zip_results[response != 'outlet', response := 'admin'] #remaining will be administrative entities 
+  csvs <- furrr::future_map2_chr(.x = zip_results$path,
+                                 .y = zip_results$response,
+                                 .f = get_pls_csv,
+                                 fy = fy, here = here)
+  # Clean up
+  process_files <- list.files(path = fp, full.names = TRUE) %>%
+    setdiff(zipfile) #Get everything but the original zip
+  unlink(process_files, recursive = TRUE) #Delete 
+  csvs #return paths to created files
+}
+```
+TODO: Test the above (currently has not run but is written); move to `pls.R`. 04/02 breakpoint (dinner).
