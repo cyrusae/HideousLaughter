@@ -86,14 +86,26 @@ get_pls_data <- \(url, extract = 'fy20..',
   csvs #return paths to created files
 }
 ```
-TODO: Test the above (currently has not run but is written); move to `pls.R`. 04/02 breakpoint (dinner).
+
+Above works! 
+
+Do we want `purrr` or `furrr`? (Also, how to avoid duplicating labor? I guess I might just end up leaving that up to `targets` given how I've written it thus far...)
+
+- Thought: Could we check the main `here` input for available FYs and exclude any by that name from list processing by default? That sounds like a good top-level way of handling it 
+
+TODO:
+- Add wrapper to check for existing applicable CSVs matching the pattern 
+- Make default option of not overwriting/optional overwriting
+- Test both
+- There are more things to move to `pls.R` self 
 ```{r}
-test <- get_pls_data(url = pls['fy2017'])
+p_test <- purrr::map(.x = pls, .f = get_pls_data)
+f_test <- furrr::future_map(.x = pls, .f = get_pls_data)
 ```
+
 ```{r}
-purrr::map(.x = pls, .f = get_pls_data)
-```
-```{r}
-furrr::future_map(.x = pls, .f = get_pls_data)
+microbenchmark::microbenchmark(
+  purrr::map(.x = pls, .f = get_pls_data), 
+  furrr::future_map(.x = pls, .f = get_pls_data), times = 2)
 ```
 
