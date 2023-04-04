@@ -23,8 +23,12 @@ Things to regroup:
 - [ ] Centralize that kind of idle thought/to-do list 
 - [ ] Note reasons for package here and bookdown project adjacent even if I'm planning on canonical non-Roxygen documentation waiting until there's canonical code too 
 
-```{r}
+Things to consult + research on:
+- [ ] Moving to a cloud environment--what needs don't I have locally?
+- [ ] Make path management better
 
+```{r}
+devtools::load_all()
 ```
 
 
