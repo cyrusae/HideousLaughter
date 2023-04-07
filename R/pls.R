@@ -119,10 +119,10 @@ get_pls_zip <- \(url = url,
     path = zip_contents,
     nrows = zip_nrows
   ) #track features about the files that we'll need in a bit
-  zip_results <- zip_results[nrows != min(zip_results$nrows), ] #remove the states file from consideration
-  zip_results[nrows == max(zip_results$nrows),
+  zip_results <- zip_results[nrows != min(nrows), ] #remove the states file from consideration
+  zip_results[nrows == max(nrows),
               response := 'outlet'] #largest file will be outlets
-  zip_results[nrows == min(zip_results$nrows),
+  zip_results[nrows == min(nrows),
               response := 'admin'] #remaining will be administrative entities
   csvs <- furrr::future_map2_chr(.x = zip_results$path,
                                  .y = zip_results$response,
