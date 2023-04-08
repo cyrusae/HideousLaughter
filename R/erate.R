@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-build_usac_url <- \(dataset, suffix = '.csv') {
+build_usac_url <- \(dataset, suffix = '.csv?$limit=1000000000') {
   prefix <- 'https://opendata.usac.org/resource/'
   res <- paste0(prefix, dataset, suffix)
 }
