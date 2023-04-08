@@ -1,0 +1,25 @@
+---
+title: "E-Rate scratchpad 1"
+output: html_notebook
+---
+
+ 
+
+```{r setup}
+require(curl) #better downloads
+require(data.table) #big data wrangling
+require(magrittr) #use the pipe
+require(stringr) #wrangle strings
+require(assertr) #enforce expected outputs
+
+```
+
+Resources:
+- URL format for all: ` https://opendata.usac.org/resource/{identity}.csv` 
+- All budgeted entities (C2 budget tool data): `6brt-5pbv` (initial sort)
+- Emergency Connectivity Fund (USAC fun-to-have add-on): `i5j4-3rvr`
+- Consultants: `x5px-esft`
+```{r}
+
+```
+
