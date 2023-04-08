@@ -11,15 +11,46 @@ require(data.table) #big data wrangling
 require(magrittr) #use the pipe
 require(stringr) #wrangle strings
 require(assertr) #enforce expected outputs
-
+require(here) #file path management (for now)
 ```
 
 Resources:
 - URL format for all: ` https://opendata.usac.org/resource/{identity}.csv` 
 - All budgeted entities (C2 budget tool data): `6brt-5pbv` (initial sort)
 - Emergency Connectivity Fund (USAC fun-to-have add-on): `i5j4-3rvr`
-- Consultants: `x5px-esft`
+- Consultants: `g55z-erud` (also `x5px-esft` but the former appears slightly more complete?)
+- Open competitive bidding: `jp7a-89nd` (includes applicant type field, can filter on)
+- Consortia: `363f-22uh` (consortium entity applicant type can be filtered on)
+- Services requested: `39tn-hjzv` (key is application number; contains category, entities served, what type of thing they want)
+- Recipient details and commitments: `avi8-svp9` (key is application number; gestalt of other data sets and thus may or may not be desirable in itself)
+- Discount request basic information: `9s6i-myen` (includes discount calculation data)
+- Discount calculations: `upfy-khtr` (includes things not above; by application number)
+- Connectivity information: `ym44-rnhq` (includes barriers, speeds)
+- FRNs: `hbj5-2bpj` (includes purpose) 
+- FRN status: `qdmp-ygft` (includes fiber types)
+- Recipients of service: `tuem-agyq` (application-frn line alignment)
+- Supplemental entity information: `7i5i-83qf` (feat. parent + child type, parent type supersedes when needed if library system)
 ```{r}
+#test filtering by url
+libraries <- 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=100000000'
+lib_test <- curl::curl_download(url = libraries,
+                                destfile = 'libtest.csv')
+fread(file = lib_test)
+#verified: this retrieves 4,347 results and USAC site expects the same.
 
+lib_sys_test <- curl::curl_download('https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=100000000', destfile = 'systest.csv')
+fread(file = lib_sys_test)
+#retrieves 1,448 library systems
+#USAC site browser also currently expects 1,448 library systems
 ```
+
+TODO: Figure out the Socrata bug re: passing tokens
+TODO: Remember to use `sep2` fread parameter if needed
+
+Filtering TODOs:
+- determine if purpose is the only thing we want from that dataset and filter nulls if possible if so
+- list of filterable by applicant type
+- list of filterable by applicant type *or* parent type
+
+Given nature of the filtered ones that have to be handled with multiple options, write to tempfile and extract and combine?
 

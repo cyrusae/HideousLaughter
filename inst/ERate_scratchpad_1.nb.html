@@ -1760,28 +1760,70 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShjdXJsKSAjYmV0dGVyIGRvd25sb2Fkc1xucmVxdWlyZShkYXRhLnRhYmxlKSAjYmlnIGRhdGEgd3JhbmdsaW5nXG5yZXF1aXJlKG1hZ3JpdHRyKSAjdXNlIHRoZSBwaXBlXG5yZXF1aXJlKHN0cmluZ3IpICN3cmFuZ2xlIHN0cmluZ3NcbnJlcXVpcmUoYXNzZXJ0cikgI2VuZm9yY2UgZXhwZWN0ZWQgb3V0cHV0c1xuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShjdXJsKSAjYmV0dGVyIGRvd25sb2Fkc1xucmVxdWlyZShkYXRhLnRhYmxlKSAjYmlnIGRhdGEgd3JhbmdsaW5nXG5yZXF1aXJlKG1hZ3JpdHRyKSAjdXNlIHRoZSBwaXBlXG5yZXF1aXJlKHN0cmluZ3IpICN3cmFuZ2xlIHN0cmluZ3NcbnJlcXVpcmUoYXNzZXJ0cikgI2VuZm9yY2UgZXhwZWN0ZWQgb3V0cHV0c1xucmVxdWlyZShoZXJlKSAjZmlsZSBwYXRoIG1hbmFnZW1lbnQgKGZvciBub3cpXG5gYGAifQ== -->
 <pre class="r"><code>require(curl) #better downloads
 require(data.table) #big data wrangling
 require(magrittr) #use the pipe
 require(stringr) #wrangle strings
 require(assertr) #enforce expected outputs
-</code></pre>
+require(here) #file path management (for now)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBoZXJlXG5oZXJlKCkgc3RhcnRzIGF0IEM6L1VzZXJzL2N5cnVzL0dpdEhlcmUvVEFTQ0hBL0hpZGVvdXNMYXVnaHRlclxuIn0= -->
+<pre><code>Loading required package: here
+here() starts at C:/Users/cyrus/GitHere/TASCHA/HideousLaughter</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Resources: - URL format for all:
 <code>https://opendata.usac.org/resource/{identity}.csv</code> - All
 budgeted entities (C2 budget tool data): <code>6brt-5pbv</code> (initial
 sort) - Emergency Connectivity Fund (USAC fun-to-have add-on):
-<code>i5j4-3rvr</code> - Consultants: <code>x5px-esft</code></p>
+<code>i5j4-3rvr</code> - Consultants: <code>g55z-erud</code> (also
+<code>x5px-esft</code> but the former appears slightly more complete?) -
+Open competitive bidding: <code>jp7a-89nd</code> (includes applicant
+type field, can filter on) - Consortia: <code>363f-22uh</code>
+(consortium entity applicant type can be filtered on) - Services
+requested: <code>39tn-hjzv</code> (key is application number; contains
+category, entities served, what type of thing they want) - Recipient
+details and commitments: <code>avi8-svp9</code> (key is application
+number; gestalt of other data sets and thus may or may not be desirable
+in itself) - Discount request basic information: <code>9s6i-myen</code>
+(includes discount calculation data) - Discount calculations:
+<code>upfy-khtr</code> (includes things not above; by application
+number) - Connectivity information: <code>ym44-rnhq</code> (includes
+barriers, speeds) - FRNs: <code>hbj5-2bpj</code> (includes purpose) -
+FRN status: <code>qdmp-ygft</code> (includes fiber types) - Recipients
+of service: <code>tuem-agyq</code> (application-frn line alignment) -
+Supplemental entity information: <code>7i5i-83qf</code> (feat. parent +
+child type, parent type supersedes when needed if library system)</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3Rlc3QgZmlsdGVyaW5nIGJ5IHVybFxubGlicmFyaWVzIDwtICdodHRwczovL29wZW5kYXRhLnVzYWMub3JnL3Jlc291cmNlLzZicnQtNXBidi5jc3Y/YXBwbGljYW50X3R5cGU9TGlicmFyeSYkbGltaXQ9MTAwMDAwMDAwJ1xubGliX3Rlc3QgPC0gY3VybDo6Y3VybF9kb3dubG9hZCh1cmwgPSBsaWJyYXJpZXMsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlc3RmaWxlID0gJ2xpYnRlc3QuY3N2JylcbmZyZWFkKGZpbGUgPSBsaWJfdGVzdClcbiN2ZXJpZmllZDogdGhpcyByZXRyaWV2ZXMgNCwzNDcgcmVzdWx0cyBhbmQgVVNBQyBzaXRlIGV4cGVjdHMgdGhlIHNhbWUuXG5cbmxpYl9zeXNfdGVzdCA8LSBjdXJsOjpjdXJsX2Rvd25sb2FkKCdodHRwczovL29wZW5kYXRhLnVzYWMub3JnL3Jlc291cmNlLzZicnQtNXBidi5jc3Y/YXBwbGljYW50X3R5cGU9TGlicmFyeSUyMFN5c3RlbSYkbGltaXQ9MTAwMDAwMDAwJywgZGVzdGZpbGUgPSAnc3lzdGVzdC5jc3YnKVxuZnJlYWQoZmlsZSA9IGxpYl9zeXNfdGVzdClcbiNyZXRyaWV2ZXMgMSw0NDggbGlicmFyeSBzeXN0ZW1zXG4jVVNBQyBzaXRlIGJyb3dzZXIgYWxzbyBjdXJyZW50bHkgZXhwZWN0cyAxLDQ0OCBsaWJyYXJ5IHN5c3RlbXNcbmBgYCJ9 -->
+<pre class="r"><code>#test filtering by url
+libraries &lt;- &#39;https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&amp;$limit=100000000&#39;
+lib_test &lt;- curl::curl_download(url = libraries,
+                                destfile = &#39;libtest.csv&#39;)
+fread(file = lib_test)
+#verified: this retrieves 4,347 results and USAC site expects the same.
+
+lib_sys_test &lt;- curl::curl_download(&#39;https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&amp;$limit=100000000&#39;, destfile = &#39;systest.csv&#39;)
+fread(file = lib_sys_test)
+#retrieves 1,448 library systems
+#USAC site browser also currently expects 1,448 library systems</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>TODO: Figure out the Socrata bug re: passing tokens TODO: Remember to
+use <code>sep2</code> fread parameter if needed</p>
+<p>Filtering TODOs: - determine if purpose is the only thing we want
+from that dataset and filter nulls if possible if so - list of
+filterable by applicant type - list of filterable by applicant type
+<em>or</em> parent type</p>
+<p>Given nature of the filtered ones that have to be handled with
+multiple options, write to tempfile and extract and combine?</p>
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRS1SYXRlIHNjcmF0Y2hwYWQgMSIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIAoKYGBge3Igc2V0dXB9CnJlcXVpcmUoY3VybCkgI2JldHRlciBkb3dubG9hZHMKcmVxdWlyZShkYXRhLnRhYmxlKSAjYmlnIGRhdGEgd3JhbmdsaW5nCnJlcXVpcmUobWFncml0dHIpICN1c2UgdGhlIHBpcGUKcmVxdWlyZShzdHJpbmdyKSAjd3JhbmdsZSBzdHJpbmdzCnJlcXVpcmUoYXNzZXJ0cikgI2VuZm9yY2UgZXhwZWN0ZWQgb3V0cHV0cwoKYGBgCgpSZXNvdXJjZXM6Ci0gVVJMIGZvcm1hdCBmb3IgYWxsOiBgIGh0dHBzOi8vb3BlbmRhdGEudXNhYy5vcmcvcmVzb3VyY2Uve2lkZW50aXR5fS5jc3ZgIAotIEFsbCBidWRnZXRlZCBlbnRpdGllcyAoQzIgYnVkZ2V0IHRvb2wgZGF0YSk6IGA2YnJ0LTVwYnZgIChpbml0aWFsIHNvcnQpCi0gRW1lcmdlbmN5IENvbm5lY3Rpdml0eSBGdW5kIChVU0FDIGZ1bi10by1oYXZlIGFkZC1vbik6IGBpNWo0LTNydnJgCi0gQ29uc3VsdGFudHM6IGB4NXB4LWVzZnRgCmBgYHtyfQoKYGBgCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRS1SYXRlIHNjcmF0Y2hwYWQgMSIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIAoKYGBge3Igc2V0dXB9CnJlcXVpcmUoY3VybCkgI2JldHRlciBkb3dubG9hZHMKcmVxdWlyZShkYXRhLnRhYmxlKSAjYmlnIGRhdGEgd3JhbmdsaW5nCnJlcXVpcmUobWFncml0dHIpICN1c2UgdGhlIHBpcGUKcmVxdWlyZShzdHJpbmdyKSAjd3JhbmdsZSBzdHJpbmdzCnJlcXVpcmUoYXNzZXJ0cikgI2VuZm9yY2UgZXhwZWN0ZWQgb3V0cHV0cwpyZXF1aXJlKGhlcmUpICNmaWxlIHBhdGggbWFuYWdlbWVudCAoZm9yIG5vdykKYGBgCgpSZXNvdXJjZXM6Ci0gVVJMIGZvcm1hdCBmb3IgYWxsOiBgIGh0dHBzOi8vb3BlbmRhdGEudXNhYy5vcmcvcmVzb3VyY2Uve2lkZW50aXR5fS5jc3ZgIAotIEFsbCBidWRnZXRlZCBlbnRpdGllcyAoQzIgYnVkZ2V0IHRvb2wgZGF0YSk6IGA2YnJ0LTVwYnZgIChpbml0aWFsIHNvcnQpCi0gRW1lcmdlbmN5IENvbm5lY3Rpdml0eSBGdW5kIChVU0FDIGZ1bi10by1oYXZlIGFkZC1vbik6IGBpNWo0LTNydnJgCi0gQ29uc3VsdGFudHM6IGBnNTV6LWVydWRgIChhbHNvIGB4NXB4LWVzZnRgIGJ1dCB0aGUgZm9ybWVyIGFwcGVhcnMgc2xpZ2h0bHkgbW9yZSBjb21wbGV0ZT8pCi0gT3BlbiBjb21wZXRpdGl2ZSBiaWRkaW5nOiBganA3YS04OW5kYCAoaW5jbHVkZXMgYXBwbGljYW50IHR5cGUgZmllbGQsIGNhbiBmaWx0ZXIgb24pCi0gQ29uc29ydGlhOiBgMzYzZi0yMnVoYCAoY29uc29ydGl1bSBlbnRpdHkgYXBwbGljYW50IHR5cGUgY2FuIGJlIGZpbHRlcmVkIG9uKQotIFNlcnZpY2VzIHJlcXVlc3RlZDogYDM5dG4taGp6dmAgKGtleSBpcyBhcHBsaWNhdGlvbiBudW1iZXI7IGNvbnRhaW5zIGNhdGVnb3J5LCBlbnRpdGllcyBzZXJ2ZWQsIHdoYXQgdHlwZSBvZiB0aGluZyB0aGV5IHdhbnQpCi0gUmVjaXBpZW50IGRldGFpbHMgYW5kIGNvbW1pdG1lbnRzOiBgYXZpOC1zdnA5YCAoa2V5IGlzIGFwcGxpY2F0aW9uIG51bWJlcjsgZ2VzdGFsdCBvZiBvdGhlciBkYXRhIHNldHMgYW5kIHRodXMgbWF5IG9yIG1heSBub3QgYmUgZGVzaXJhYmxlIGluIGl0c2VsZikKLSBEaXNjb3VudCByZXF1ZXN0IGJhc2ljIGluZm9ybWF0aW9uOiBgOXM2aS1teWVuYCAoaW5jbHVkZXMgZGlzY291bnQgY2FsY3VsYXRpb24gZGF0YSkKLSBEaXNjb3VudCBjYWxjdWxhdGlvbnM6IGB1cGZ5LWtodHJgIChpbmNsdWRlcyB0aGluZ3Mgbm90IGFib3ZlOyBieSBhcHBsaWNhdGlvbiBudW1iZXIpCi0gQ29ubmVjdGl2aXR5IGluZm9ybWF0aW9uOiBgeW00NC1ybmhxYCAoaW5jbHVkZXMgYmFycmllcnMsIHNwZWVkcykKLSBGUk5zOiBgaGJqNS0yYnBqYCAoaW5jbHVkZXMgcHVycG9zZSkgCi0gRlJOIHN0YXR1czogYHFkbXAteWdmdGAgKGluY2x1ZGVzIGZpYmVyIHR5cGVzKQotIFJlY2lwaWVudHMgb2Ygc2VydmljZTogYHR1ZW0tYWd5cWAgKGFwcGxpY2F0aW9uLWZybiBsaW5lIGFsaWdubWVudCkKLSBTdXBwbGVtZW50YWwgZW50aXR5IGluZm9ybWF0aW9uOiBgN2k1aS04M3FmYCAoZmVhdC4gcGFyZW50ICsgY2hpbGQgdHlwZSwgcGFyZW50IHR5cGUgc3VwZXJzZWRlcyB3aGVuIG5lZWRlZCBpZiBsaWJyYXJ5IHN5c3RlbSkKYGBge3J9CiN0ZXN0IGZpbHRlcmluZyBieSB1cmwKbGlicmFyaWVzIDwtICdodHRwczovL29wZW5kYXRhLnVzYWMub3JnL3Jlc291cmNlLzZicnQtNXBidi5jc3Y/YXBwbGljYW50X3R5cGU9TGlicmFyeSYkbGltaXQ9MTAwMDAwMDAwJwpsaWJfdGVzdCA8LSBjdXJsOjpjdXJsX2Rvd25sb2FkKHVybCA9IGxpYnJhcmllcywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXN0ZmlsZSA9ICdsaWJ0ZXN0LmNzdicpCmZyZWFkKGZpbGUgPSBsaWJfdGVzdCkKI3ZlcmlmaWVkOiB0aGlzIHJldHJpZXZlcyA0LDM0NyByZXN1bHRzIGFuZCBVU0FDIHNpdGUgZXhwZWN0cyB0aGUgc2FtZS4KCmxpYl9zeXNfdGVzdCA8LSBjdXJsOjpjdXJsX2Rvd25sb2FkKCdodHRwczovL29wZW5kYXRhLnVzYWMub3JnL3Jlc291cmNlLzZicnQtNXBidi5jc3Y/YXBwbGljYW50X3R5cGU9TGlicmFyeSUyMFN5c3RlbSYkbGltaXQ9MTAwMDAwMDAwJywgZGVzdGZpbGUgPSAnc3lzdGVzdC5jc3YnKQpmcmVhZChmaWxlID0gbGliX3N5c190ZXN0KQojcmV0cmlldmVzIDEsNDQ4IGxpYnJhcnkgc3lzdGVtcwojVVNBQyBzaXRlIGJyb3dzZXIgYWxzbyBjdXJyZW50bHkgZXhwZWN0cyAxLDQ0OCBsaWJyYXJ5IHN5c3RlbXMKYGBgCgpUT0RPOiBGaWd1cmUgb3V0IHRoZSBTb2NyYXRhIGJ1ZyByZTogcGFzc2luZyB0b2tlbnMKVE9ETzogUmVtZW1iZXIgdG8gdXNlIGBzZXAyYCBmcmVhZCBwYXJhbWV0ZXIgaWYgbmVlZGVkCgpGaWx0ZXJpbmcgVE9ET3M6Ci0gZGV0ZXJtaW5lIGlmIHB1cnBvc2UgaXMgdGhlIG9ubHkgdGhpbmcgd2Ugd2FudCBmcm9tIHRoYXQgZGF0YXNldCBhbmQgZmlsdGVyIG51bGxzIGlmIHBvc3NpYmxlIGlmIHNvCi0gbGlzdCBvZiBmaWx0ZXJhYmxlIGJ5IGFwcGxpY2FudCB0eXBlCi0gbGlzdCBvZiBmaWx0ZXJhYmxlIGJ5IGFwcGxpY2FudCB0eXBlICpvciogcGFyZW50IHR5cGUKCkdpdmVuIG5hdHVyZSBvZiB0aGUgZmlsdGVyZWQgb25lcyB0aGF0IGhhdmUgdG8gYmUgaGFuZGxlZCB3aXRoIG11bHRpcGxlIG9wdGlvbnMsIHdyaXRlIHRvIHRlbXBmaWxlIGFuZCBleHRyYWN0IGFuZCBjb21iaW5lPwoK</div>
 
 
 
