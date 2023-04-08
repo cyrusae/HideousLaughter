@@ -1,5 +1,7 @@
 # Functionality relating to downloading/extracting/preparing PLS data from the IMLS site.
 
+#TODO: replace download.file with curl
+
 #' Retrieve URLs from IMLS
 #'
 #' @description
