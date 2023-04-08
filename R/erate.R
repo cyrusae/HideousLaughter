@@ -1,6 +1,7 @@
 # Functionality directly relating to downloading/sanitizing/filtering E-Rate data from USAC to make it bearable to deal with.
 
 #TODO: Fill out Roxygen skeletons
+#TODO: change this to handle the parameters needed after (filtering, setting an arbitrarily high limit to get around the default cap on API requests)
 #' Title
 #'
 #' @param dataset
