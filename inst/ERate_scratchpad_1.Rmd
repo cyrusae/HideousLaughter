@@ -12,6 +12,9 @@ require(magrittr) #use the pipe
 require(stringr) #wrangle strings
 require(assertr) #enforce expected outputs
 require(here) #file path management (for now)
+require(withr) #tempdir management 
+require(dplyr) #binding rows
+require(furrr) #simultinaeity
 ```
 
 Resources:
@@ -19,8 +22,8 @@ Resources:
 - All budgeted entities (C2 budget tool data): `6brt-5pbv` (initial sort)
 - Emergency Connectivity Fund (USAC fun-to-have add-on): `i5j4-3rvr`
 - Consultants: `g55z-erud` (also `x5px-esft` but the former appears slightly more complete?)
-- Open competitive bidding: `jp7a-89nd` (includes applicant type field, can filter on)
-- Consortia: `363f-22uh` (consortium entity applicant type can be filtered on)
+- Open competitive bidding: `jp7a-89nd` (includes *applicant type* field, can filter on)
+- Consortia: `363f-22uh` (*consortium entity applicant type* can be filtered on)
 - Services requested: `39tn-hjzv` (key is application number; contains category, entities served, what type of thing they want)
 - Recipient details and commitments: `avi8-svp9` (key is application number; gestalt of other data sets and thus may or may not be desirable in itself)
 - Discount request basic information: `9s6i-myen` (includes discount calculation data)
@@ -29,7 +32,7 @@ Resources:
 - FRNs: `hbj5-2bpj` (includes purpose) 
 - FRN status: `qdmp-ygft` (includes fiber types)
 - Recipients of service: `tuem-agyq` (application-frn line alignment)
-- Supplemental entity information: `7i5i-83qf` (feat. parent + child type, parent type supersedes when needed if library system)
+- Supplemental entity information: `7i5i-83qf` (feat. *parent + child type, parent type supersedes when needed if library system*)
 ```{r}
 #test filtering by url
 libraries <- 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=100000000'
@@ -53,4 +56,61 @@ Filtering TODOs:
 - list of filterable by applicant type *or* parent type
 
 Given nature of the filtered ones that have to be handled with multiple options, write to tempfile and extract and combine?
+
+```{r}
+curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=100000000',
+                      destfile = 'lib.csv')
+curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=100000000',
+                      destfile = 'sys.csv')
+lib <- data.table::fread(file = 'lib.csv')
+sys <- data.table::fread(file = 'sys.csv')
+assertthat::are_equal(names(lib), names(sys)) #check that columns match 
+libsys <- dplyr::bind_rows(lib, sys)
+assertthat::are_equal((nrow(lib) + nrow(sys)),
+                      nrow(libsys)) #check that the combined table contains rows from each 
+```
+```{r}
+f <- \() {
+  curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=100000000',
+                      destfile = 'lib.csv')
+  curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=100000000',
+                      destfile = 'sys.csv')
+  lib <- data.table::fread(file = 'lib.csv')
+  sys <- data.table::fread(file = 'sys.csv')
+  assertthat::are_equal(names(lib), names(sys)) #check that columns match 
+  libsys <- dplyr::bind_rows(lib, sys)
+  assertthat::are_equal((nrow(lib) + nrow(sys)),
+                      nrow(libsys)) #check that the combined table contains rows from each 
+  libsys
+}
+```
+
+```{r}
+with_tempdir(f())
+```
+
+```{r}
+build_usac <- \(dataset = '',
+                by = NULL,
+                accept = NULL) {
+  
+  if (is.null(by)) {
+    res <- paste0('https://opendata.usac.org/resource/', dataset, '.csv?', '$limit=10000000') 
+  } else {
+    res <- paste0('https://opendata.usac.org/resource/', dataset, '.csv?', by, '_',
+                  accept, '&$limit=10000000')
+  }
+  res
+}
+
+build_usac(dataset = '6brt-5pbv',
+           by = 'applicant_type',
+           accept = 'Library')
+furrr::future_map_chr(.x = c('Library',
+                             'Library%20System'),
+                      .f = build_usac,
+                      dataset = '6brt-5pbv',
+                      by = 'applicant_type')
+  #mapped version works 
+```
 
