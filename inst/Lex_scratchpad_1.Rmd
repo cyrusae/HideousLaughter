@@ -1,0 +1,10 @@
+---
+title: "Lexicographer scratchpad #1"
+output: html_notebook
+---
+
+flat file helper show me the contents of the files
+
+```{r setup}
+devtools::load_all()
+```
