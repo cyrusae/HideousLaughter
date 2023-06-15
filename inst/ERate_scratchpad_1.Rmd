@@ -14,7 +14,7 @@ require(assertr) #enforce expected outputs
 require(here) #file path management (for now)
 require(withr) #tempdir management 
 require(dplyr) #binding rows
-require(furrr) #simultinaeity
+require(furrr) #simultaneity
 ```
 
 Resources:
