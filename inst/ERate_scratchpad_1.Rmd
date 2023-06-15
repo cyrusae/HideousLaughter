@@ -41,7 +41,7 @@ lib_test <- curl::curl_download(url = libraries,
 fread(file = lib_test)
 #verified: this retrieves 4,347 results and USAC site expects the same.
 
-lib_sys_test <- curl::curl_download('https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=100000000', destfile = 'systest.csv')
+lib_sys_test <- curl::curl_download('https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=1000000000', destfile = 'systest.csv')
 fread(file = lib_sys_test)
 #retrieves 1,448 library systems
 #USAC site browser also currently expects 1,448 library systems
@@ -58,9 +58,9 @@ Filtering TODOs:
 Given nature of the filtered ones that have to be handled with multiple options, write to tempfile and extract and combine?
 
 ```{r}
-curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=100000000',
+curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=1000000000',
                       destfile = 'lib.csv')
-curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=100000000',
+curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=1000000000',
                       destfile = 'sys.csv')
 lib <- data.table::fread(file = 'lib.csv')
 sys <- data.table::fread(file = 'sys.csv')
@@ -71,9 +71,9 @@ assertthat::are_equal((nrow(lib) + nrow(sys)),
 ```
 ```{r}
 f <- \() {
-  curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=100000000',
+  curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library&$limit=1000000000',
                       destfile = 'lib.csv')
-  curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=100000000',
+  curl::curl_download(url = 'https://opendata.usac.org/resource/6brt-5pbv.csv?applicant_type=Library%20System&$limit=1000000000',
                       destfile = 'sys.csv')
   lib <- data.table::fread(file = 'lib.csv')
   sys <- data.table::fread(file = 'sys.csv')
@@ -95,10 +95,10 @@ build_usac <- \(dataset = '',
                 accept = NULL) {
   
   if (is.null(by)) {
-    res <- paste0('https://opendata.usac.org/resource/', dataset, '.csv?', '$limit=10000000') 
+    res <- paste0('https://opendata.usac.org/resource/', dataset, '.csv?', '$limit=10000000000') 
   } else {
     res <- paste0('https://opendata.usac.org/resource/', dataset, '.csv?', by, '_',
-                  accept, '&$limit=10000000')
+                  accept, '&$limit=1000000000')
   }
   res
 }
