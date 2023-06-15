@@ -19,9 +19,12 @@ Imports:
     data.table,
     furrr,
     here,
-    magrittr,
     purrr,
     rvest,
     stringr,
     targets,
-    withr
+    withr,
+    wrapr,
+    glue,
+    poorman,
+    rprojroot
