@@ -1755,12 +1755,73 @@ display: none;
 <p>flat file helper show me the contents of the files</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGV2dG9vbHM6OmxvYWRfYWxsKClcbmBgYCJ9 -->
-<pre class="r"><code>devtools::load_all()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGV2dG9vbHM6OmxvYWRfYWxsKClcblxuYGBgIn0= -->
+<pre class="r"><code>devtools::load_all()
+</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoi4oS5IExvYWRpbmcgSGlkZW91c0xhdWdodGVyXG4ifQ== -->
+<pre><code>ℹ Loading HideousLaughter</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxzdGVzdCA8LSBkYXRhLnRhYmxlOjpmcmVhZChmaWxlID0gJy4vZGF0YS9yYXcvUExTX2NzdnMvcGxzX2FkbWluX2Z5MjAxNC5jc3YnKVxuXG5gYGAifQ== -->
+<pre class="r"><code>plstest &lt;- data.table::fread(file = &#39;./data/raw/PLS_csvs/pls_admin_fy2014.csv&#39;)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gZGF0YS50YWJsZTo6ZnJlYWQoZmlsZSA9IFwiLi9kYXRhL3Jhdy9QTFNfY3N2cy9wbHNfYWRtaW5fZnkyMDE0LmNzdlwiKSA6IFxuICBGaWxlICcuL2RhdGEvcmF3L1BMU19jc3ZzL3Bsc19hZG1pbl9meTIwMTQuY3N2JyBkb2VzIG5vdCBleGlzdCBvciBpcyBub24tcmVhZGFibGUuIGdldHdkKCk9PSdDOi9Vc2Vycy9jeXJ1cy9HaXRIZXJlL1RBU0NIQS9IaWRlb3VzTGF1Z2h0ZXIvaW5zdCdcbiJ9 -->
+<pre><code>Error in data.table::fread(file = &quot;./data/raw/PLS_csvs/pls_admin_fy2014.csv&quot;) : 
+  File &#39;./data/raw/PLS_csvs/pls_admin_fy2014.csv&#39; does not exist or is non-readable. getwd()==&#39;C:/Users/cyrus/GitHere/TASCHA/HideousLaughter/inst&#39;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxzdGVzdCAlLj4lIHBvb3JtYW46OnNlbGVjdCggI2xldCdzIHJlbW92ZSB0aGUgZmxhZyBjb2x1bW5zXG4gIC4sICEocG9vcm1hbjo6c3RhcnRzX3dpdGgoJ0ZfJywgaWdub3JlLmNhc2UgPSBGKSkpICUuPiVcbiAgY2xhc3MoLikgXG5cbmBgYCJ9 -->
+<pre class="r"><code>plstest %.&gt;% poorman::select( #let&#39;s remove the flag columns
+  ., !(poorman::starts_with(&#39;F_&#39;, ignore.case = F))) %.&gt;%
+  class(.) 
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZGF0YS50YWJsZVwiIFwiZGF0YS5mcmFtZVwiXG4ifQ== -->
+<pre><code>[1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p><strong>Notice:</strong> There are random periods in otherwise
+numerical (mostly?) data. Is this another secret form of NA, PLS</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2x1ZTo6Z2x1ZV9kYXRhKC54ID0gcGxzdGVzdFtbMV1dLCAney59IGNvbnRhaW5zIHtsZW5ndGgodW5pcXVlcyguKSl9JylcblxuYGBgIn0= -->
+<pre class="r"><code>glue::glue_data(.x = plstest[[1]], &#39;{.} contains {length(uniques(.))}&#39;)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gbGlzdDJlbnYoYXMubGlzdCgueCksIHBhcmVudCA9IC5lbnZpcikgOiBcbiAgbmFtZXMoeCkgbXVzdCBiZSBhIGNoYXJhY3RlciB2ZWN0b3Igb2YgdGhlIHNhbWUgbGVuZ3RoIGFzIHhcbiJ9 -->
+<pre><code>Error in list2env(as.list(.x), parent = .envir) : 
+  names(x) must be a character vector of the same length as x</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2ZpbmUsIGhhcmQgd2F5XG5cbmxleCA8LSBcXCh2ZWMsIG4gPSBuYW1lcyh2ZWMpKSB7XG4gIHUgPC0gd3JhcHI6OnVuaXF1ZXModmVjKSAlLj4lIG5yb3coLilcbiAgZyA8LSBnbHVlOjpnbHVlKCd7bn0gY29udGFpbnMge3V9IHVuaXF1ZSB2YWx1ZXMuJylcbn1cblxudCA8LSBsZXgocGxzdGVzdFssMV0pXG50XG5gYGAifQ== -->
+<pre class="r"><code>#fine, hard way
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTGV4aWNvZ3JhcGhlciBzY3JhdGNocGFkICMxIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpmbGF0IGZpbGUgaGVscGVyIHNob3cgbWUgdGhlIGNvbnRlbnRzIG9mIHRoZSBmaWxlcwoKYGBge3Igc2V0dXB9CmRldnRvb2xzOjpsb2FkX2FsbCgpCmBgYAo=</div>
+lex &lt;- \(vec, n = names(vec)) {
+  u &lt;- wrapr::uniques(vec) %.&gt;% nrow(.)
+  g &lt;- glue::glue(&#39;{n} contains {u} unique values.&#39;)
+}
+
+t &lt;- lex(plstest[,1])
+t</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiU1RBQlIgY29udGFpbnMgNTYgdW5pcXVlIHZhbHVlcy5cbiJ9 -->
+<pre><code>STABR contains 56 unique values.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTGV4aWNvZ3JhcGhlciBzY3JhdGNocGFkICMxIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpmbGF0IGZpbGUgaGVscGVyIHNob3cgbWUgdGhlIGNvbnRlbnRzIG9mIHRoZSBmaWxlcwoKYGBge3J9CmRldnRvb2xzOjpsb2FkX2FsbCgpCmBgYApgYGB7cn0KI2dldCBhcmJpdHJhcnkgY3N2IHRvIHRlc3Qgb24gCnBsc3Rlc3QgPC0gZGF0YS50YWJsZTo6ZnJlYWQoZmlsZSA9ICcuLi9kYXRhL3Jhdy9QTFNfY3N2cy9wbHNfYWRtaW5fZnkyMDE0LmNzdicpCmBgYAoKYGBge3J9CgojIHBsc3Rlc3QgJS4+JSBnbHVlOjpnbHVlX2RhdGEoLiwgJ3tuYW1lcyguKX0gaGFzIHtsZW5ndGgodW5pcXVlcyguW1tdXSkpfSB1bmlxdWUgdmFsdWVzJykgI2hvdyBjYW4gSSBmb2N1cyBvbiBvbmUgY29sdW1uIGF0IGEgdGltZSBoZXJlLgoKd3JhcHI6OmdyZXBkZignRlxcXy4nLCBwbHN0ZXN0KSAjd2UgY2FuIGdldCB0aGUgZmxhZyBjb2x1bW5zCnBsc3Rlc3QgJS4+JSBwb29ybWFuOjpzZWxlY3QoICNsZXQncyByZW1vdmUgdGhlIGZsYWcgY29sdW1ucwogIC4sICEocG9vcm1hbjo6c3RhcnRzX3dpdGgoJ0ZfJywgaWdub3JlLmNhc2UgPSBGKSkpICUuPiUKICBjbGFzcyguKSAjcG9vcm1hbiBtYW5pcHVsYXRpb24gZG9lcyBub3QgY2hhbmdlIGRhdGEudGFibGUgY2xhc3MKIyMgb2theSBJIG1heSBoYXZlIGdvdHRlbiBkaXN0cmFjdGVkLgoKCnBsc3Rlc3QgPC0gcGxzdGVzdCAlLj4lIHBvb3JtYW46OnNlbGVjdCggI2xldCdzIHJlbW92ZSB0aGUgZmxhZyBjb2x1bW5zIGJ1dCBmb3IgcmVhbCB0aGlzIHRpbWUKICAuLCAhKHBvb3JtYW46OnN0YXJ0c193aXRoKCdGXycsIGlnbm9yZS5jYXNlID0gRikpKQpgYGAKCioqTm90aWNlOioqIFRoZXJlIGFyZSByYW5kb20gcGVyaW9kcyBpbiBvdGhlcndpc2UgbnVtZXJpY2FsIChtb3N0bHk/KSBkYXRhLiBJcyB0aGlzIGFub3RoZXIgc2VjcmV0IGZvcm0gb2YgTkEsIFBMUwoKYGBge3J9CmxleCA8LSBcKHZlYykgewogIGdsdWU6OmdsdWUoJ3tuYW1lcyh2ZWMpfSBjb250YWlucyB7bGVuZ3RoKHVuaXF1ZXModmVjKSl9IHVuaXF1ZSB2YWx1ZXMuJykKfQpnIDwtIGxleChwbHN0ZXN0WywgMV0pCmcKCiMgZ2x1ZTo6Z2x1ZV9kYXRhKC54ID0gcGxzdGVzdFtbMV1dLCAney59IGNvbnRhaW5zIHtsZW5ndGgodW5pcXVlcyguKSl9JykgI25vIHRoYXQgZG9lc24ndCBxdWl0ZSB3b3JrIGVpdGhlcgpgYGAKCmBgYHtyfQojZmluZSwgaGFyZCB3YXkKCmxleCA8LSBcKHZlYywgbiA9IG5hbWVzKHZlYykpIHsKICB1IDwtIHdyYXByOjp1bmlxdWVzKHZlYykgJS4+JSBucm93KC4pCiAgZyA8LSBnbHVlOjpnbHVlKCd7bn0gY29udGFpbnMge3V9IHVuaXF1ZSB2YWx1ZXMuJykKfQoKdCA8LSBsZXgocGxzdGVzdFssMV0pCnQKYGBgCgoK</div>
 
 
 

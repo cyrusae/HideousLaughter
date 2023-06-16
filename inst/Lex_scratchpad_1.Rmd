@@ -5,6 +5,51 @@ output: html_notebook
 
 flat file helper show me the contents of the files
 
-```{r setup}
+```{r}
 devtools::load_all()
 ```
+```{r}
+#get arbitrary csv to test on 
+plstest <- data.table::fread(file = '../data/raw/PLS_csvs/pls_admin_fy2014.csv')
+```
+
+```{r}
+
+# plstest %.>% glue::glue_data(., '{names(.)} has {length(uniques(.[[]]))} unique values') #how can I focus on one column at a time here.
+
+wrapr::grepdf('F\\_.', plstest) #we can get the flag columns
+plstest %.>% poorman::select( #let's remove the flag columns
+  ., !(poorman::starts_with('F_', ignore.case = F))) %.>%
+  class(.) #poorman manipulation does not change data.table class
+## okay I may have gotten distracted.
+
+
+plstest <- plstest %.>% poorman::select( #let's remove the flag columns but for real this time
+  ., !(poorman::starts_with('F_', ignore.case = F)))
+```
+
+**Notice:** There are random periods in otherwise numerical (mostly?) data. Is this another secret form of NA, PLS
+
+```{r}
+lex <- \(vec) {
+  glue::glue('{names(vec)} contains {length(uniques(vec))} unique values.')
+}
+g <- lex(plstest[, 1])
+g
+
+# glue::glue_data(.x = plstest[[1]], '{.} contains {length(uniques(.))}') #no that doesn't quite work either
+```
+
+```{r}
+#fine, hard way
+
+lex <- \(vec, n = names(vec)) {
+  u <- wrapr::uniques(vec) %.>% nrow(.)
+  g <- glue::glue('{n} contains {u} unique values.')
+}
+
+t <- lex(plstest[,1])
+t
+```
+
+
